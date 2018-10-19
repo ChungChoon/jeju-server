@@ -1,7 +1,8 @@
 "use strict";
 
 const express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    db = require('../../module/db_transction');
 
 // /* GET home page. */
 // router.get('/', (req, res, next) =>
@@ -11,6 +12,7 @@ const express = require('express'),
 
 router.post('/', async (req, res, next) => {
     let email = req.body.email;
+
 })
 
 
