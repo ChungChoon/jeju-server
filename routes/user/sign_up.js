@@ -9,4 +9,9 @@ const express = require('express'),
 //         title: 'Express'
 //     }));
 
+router.post('/', async (req, res, next) => {
+    let email = req.body.email;
+})
+
+
 module.exports = router;
