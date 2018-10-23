@@ -11,7 +11,19 @@ const express = require('express'),
 //     }));
 
 router.post('/', async (req, res, next) => {
-    let email = req.body.email;
+    let {
+        email,
+        name,
+        birth,
+        sex,
+        hp,
+        addr
+    } = req.body;
+    if (flag == 1) {
+        console.log('농부 계정 가입');
+    } else if (flag == 2) {
+        console.log('일반 계정 가입');
+    };
 
 })
 
