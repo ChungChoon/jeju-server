@@ -10,15 +10,23 @@ const express = require('express'),
 //         title: 'Express'
 //     }));
 
+
+router.post('/dupcheck', async (req, res, next) => {
+
+});
+
 router.post('/', async (req, res, next) => {
     let {
-        email,
+        mail,
         name,
+        passwd,
         birth,
         sex,
         hp,
-        addr
+        wallet,
+        flag
     } = req.body;
+
     // 기본 공통값 받고, Null 검사
     // 농부계정인지 일반계정인지 구분
     // 중복검사 쿼리수행
