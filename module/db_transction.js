@@ -4,9 +4,9 @@ module.exports = {
     queryParamNone: async (...args) => {
             const query = args[0];
             let result;
-
+            let connection;
             try {
-                let connection = await pool.getConnection();
+                connection = await pool.getConnection();
                 result = await connection.query(query) || null;
             } catch (err) {
                 next(err);
@@ -20,9 +20,10 @@ module.exports = {
             const query = args[0];
             const value = args[1];
             let result;
+            let connection;
 
             try {
-                let connection = await pool.getConnection();
+                connection = await pool.getConnection();
                 result = await connection.query(query, value) || null;
             } catch (err) {
                 next(err);
