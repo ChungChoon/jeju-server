@@ -1,12 +1,20 @@
 "use strict";
 
 const express = require('express'),
-    router = express.Router();
+    router = express.Router(),
+    db = require('../../module/db_transction');
 
-// /* GET home page. */
-// router.get('/', (req, res, next) =>
-//     res.render('index', {
-//         title: 'Express'
-//     }));
+
+router.post('/mail', async (req, res, next) => {
+
+});
+
+router.post('/nickname', async (req, res, next) => {
+
+});
+
+router.post('/wallet', async (req, res, next) => {
+
+});
 
 module.exports = router;
