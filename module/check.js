@@ -1,4 +1,4 @@
-modeule.exports = {
+module.exports = {
 
     // 클라이언트로부터 받은 값이 Null인지 체크
     checkNull: (value) => {
@@ -9,4 +9,4 @@ modeule.exports = {
         }
         return 0;
     }
-}
+};
