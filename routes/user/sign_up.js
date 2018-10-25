@@ -11,10 +11,6 @@ const express = require('express'),
 //     }));
 
 
-router.post('/dupcheck', async (req, res, next) => {
-
-});
-
 router.post('/', async (req, res, next) => {
     let {
         mail,
