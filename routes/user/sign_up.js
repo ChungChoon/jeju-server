@@ -19,7 +19,6 @@ router.post('/', async (req, res, next) => {
         birth,
         sex,
         hp,
-        wallet,
         flag
     } = req.body;
 
