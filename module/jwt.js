@@ -4,7 +4,7 @@ const secret_key = require('../config/secret_key').secret;
 
 module.exports = {
     //make token
-    sign: function (mail, user_idx) {
+    sign: function (user_idx, mail) {
         const options = {
             algorithm: "HS256",
             expiresIn: 60 * 60 * 24 * 30 // 30 days

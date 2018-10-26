@@ -11,10 +11,12 @@ const express = require('express'),
 
 const user_router = require('./user/user_router');
 const home_router = require('./home/home_router');
+const lecture_router = require('./lecture/lecture_router');
 const network = require('./network/test');
 
 router.use('/user', user_router);
 router.use('/home', home_router);
+router.use('/lecture', lecture_router);
 router.use('/network', network);
 
 module.exports = router;
