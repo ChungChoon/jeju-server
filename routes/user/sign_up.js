@@ -58,7 +58,9 @@ router.post('/', async (req, res, next) => {
             // const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 2]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('base64'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('base64'), 2]);
+            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 2]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
@@ -139,7 +141,9 @@ router.post('/farmer', async (req, res, next) => {
             // const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 1]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('base64'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('base64'), 1]);
+            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
