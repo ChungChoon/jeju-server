@@ -7,38 +7,6 @@ const express = require('express'),
     crypto = require('crypto-promise'),
     secret_key = require('../../config/secret_key');
 
-// /* GET home page. */
-// router.get('/', (req, res, next) =>
-//     res.render('index', {
-//         title: 'Express'
-//     }));
-
-
-// router.post('/', async (req, res, next) => {
-//     let {
-//         mail,
-//         name,
-//         passwd,
-//         birth,
-//         sex,
-//         hp,
-//         flag
-//     } = req.body;
-
-//     // 기본 공통값 받고, Null 검사
-//     // 농부계정인지 일반계정인지 구분
-//     // 중복검사 쿼리수행
-//     // 통과 여부에 따라 패스워드 생성
-//     // 디비 저장 쿼리수행
-
-//     if (flag == 1) {
-//         console.log('농부 계정 가입');
-//     } else if (flag == 2) {
-//         console.log('일반 계정 가입');
-//     };
-
-// })
-
 
 router.post('/', async (req, res, next) => {
     let {
@@ -78,7 +46,7 @@ router.post('/', async (req, res, next) => {
             // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 2]);
 
             //사용자의 비밀번호를 지갑 비밀번호와 같은 것으로 설정하기 때문에 후에 복호화가 가능해야한다 그래서 양방향 암호화방식을 선택하여 진행함
-            const cipher = await crypto.cipher('aes256', secret_key)(passwd);
+            const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
             const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -147,11 +115,11 @@ router.post('/farmer', async (req, res, next) => {
             // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 1]);
 
-            const cipher = await crypto.cipher('aes256', secret_key)(passwd);
-            const cipher_result = cipher.toString('hex');
+            const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
+            // const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher_result, 'secret_key', birth, sex, hp, '12134', 1]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher.toString('hex'), 'secret_key', birth, sex, hp, '12134', 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
