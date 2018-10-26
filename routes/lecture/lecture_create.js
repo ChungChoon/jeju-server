@@ -68,6 +68,7 @@ router.post('/', async (req, res, next) => {
                         place,
                         curriculum,
                         intro,
+                        limit_num,
                         price
                     ])) {
                     res.status(400).json({
@@ -83,8 +84,8 @@ router.post('/', async (req, res, next) => {
                     place,
                     curriculum,
                     intro,
-                    price
-                limit_num) values (?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`;
+                limit_num,
+                price) values (?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`;
                     let insert_lecture_result = await db.queryParamArr(insert_lecture, [title,
                         target,
                         kind,
