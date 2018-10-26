@@ -54,7 +54,8 @@ router.post('/', async (req, res, next) => {
                     end_date,
                     place,
                     curriculum,
-                    intro
+                    intro,
+                    limit_num
                 } = req.body;
 
                 if (check.checkNull([title,
@@ -79,7 +80,8 @@ router.post('/', async (req, res, next) => {
                     end_date,
                     place,
                     curriculum,
-                    intro) values (?, ?, ?, ? ,?, ?, ?, ?, ?);`;
+                    intro,
+                limit_num) values (?, ?, ?, ? ,?, ?, ?, ?, ?, ?);`;
                     let insert_lecture_result = await db.queryParamArr(insert_lecture, [title,
                         target,
                         kind,
@@ -88,7 +90,8 @@ router.post('/', async (req, res, next) => {
                         end_date,
                         place,
                         curriculum,
-                        intro
+                        intro,
+                        limit_num
                     ]);
 
                     if (!insert_lecture_result) { // 쿼리수행중 에러가 있을 경우
