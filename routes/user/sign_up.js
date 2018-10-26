@@ -4,7 +4,8 @@ const express = require('express'),
     router = express.Router(),
     db = require('../../module/db_transction'),
     check = require('../../module/check'),
-    crypto = require('crypto-promise');
+    crypto = require('crypto-promise'),
+    secret_key = require('../../config/secret_key');
 
 // /* GET home page. */
 // router.get('/', (req, res, next) =>
@@ -38,18 +39,6 @@ const express = require('express'),
 
 // })
 
-router.get('/', async (req, res, next) => {
-    const cipher = crypto.createCipher('aes-256-cbc', '열쇠');
-    let result = cipher.update('암호화할문장', 'utf8', 'base64'); // 'HbMtmFdroLU0arLpMflQ'
-    result += cipher.final('base64'); // 'HbMtmFdroLU0arLpMflQYtt8xEf4lrPn5tX5k+a8Nzw='
-
-    const decipher = crypto.createDecipher('aes-256-cbc', '열쇠');
-    let result2 = decipher.update(result, 'base64', 'utf8'); // 암호화할문 (base64, utf8이 위의 cipher과 반대 순서입니다.)
-    result2 += decipher.final('utf8'); // 암호화할문장 (여기도 base64대신 utf8)
-
-    console.log(result);
-    console.log(result2);
-});
 
 router.post('/', async (req, res, next) => {
     let {
@@ -82,11 +71,18 @@ router.post('/', async (req, res, next) => {
             });
 
         } else {
-            const salt = await crypto.randomBytes(32);
-            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            // const salt = await crypto.randomBytes(32);
+            // const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+
+            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 2]);
+
+            //사용자의 비밀번호를 지갑 비밀번호와 같은 것으로 설정하기 때문에 후에 복호화가 가능해야한다 그래서 양방향 암호화방식을 선택하여 진행함
+            const cipher = await crypto.cipher('aes256', secret_key)(passwd);
+            const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 2]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher_result, 'secret_key', birth, sex, hp, '12134', 2]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
@@ -123,7 +119,7 @@ router.post('/farmer', async (req, res, next) => {
         farm_name,
         farm_num,
         farm_addr,
-        farm_kind,
+        farm_subject,
     } = req.body;
 
     if (check.checkNull([mail, name, passwd, birth, sex, career])) {
@@ -145,11 +141,17 @@ router.post('/farmer', async (req, res, next) => {
             });
 
         } else {
-            const salt = await crypto.randomBytes(32);
-            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            // const salt = await crypto.randomBytes(32);
+            // const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+
+            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 1]);
+
+            const cipher = await crypto.cipher('aes256', secret_key)(passwd);
+            const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 1]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher_result, 'secret_key', birth, sex, hp, '12134', 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
@@ -165,9 +167,19 @@ router.post('/farmer', async (req, res, next) => {
                         message: "Internal Server Error"
                     });
                 } else {
-                    res.status(200).send({
-                        message: "Success To Sign Up"
-                    })
+                    console.log(insert_result2.insertId);
+                    let farmer_idx = insert_result2.insertId;
+                    let farm_insert_query = `insert into farm (farmer_fk, name, reg_num, addr, subject) values (?, ?, ?, ?, ?)`;
+                    let insert_result3 = await db.queryParamArr(farm_insert_query, [farmer_idx, farm_name, farm_num, farm_addr, farm_subject]);
+                    if (!insert_result3) { // 쿼리수행중 에러가 있을 경우
+                        res.status(500).send({
+                            message: "Internal Server Error"
+                        });
+                    } else {
+                        res.status(200).send({
+                            message: "Success To Sign Up"
+                        });
+                    }
                 }
             }
         }
