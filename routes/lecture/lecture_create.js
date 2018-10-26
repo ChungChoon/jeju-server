@@ -35,7 +35,6 @@ router.post('/', async (req, res, next) => {
         } else {
             let check_query = `select * from user where mail = ?;`;
             let check_result = await db.queryParamArr(check_query, [decoded.mail]);
-            console.log(decoded);
 
             if (!check_result) {
                 res.status(500).json({
@@ -106,7 +105,7 @@ router.post('/', async (req, res, next) => {
                             });
                         } else {
                             res.status(200).send({
-                                message: "Success To Sign Up"
+                                message: "Success To Create Lecture"
                             })
                         }
                     }
