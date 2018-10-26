@@ -6,7 +6,7 @@ const express = require('express'),
     check = require('../../module/check'),
     crypto = require('crypto-promise'),
     secret_key = require('../../config/secret_key'),
-    jwt = require('../../../module/jwt');
+    jwt = require('../../module/jwt');
 
 //사용자 로그인
 router.post('/', async (req, res, next) => {
@@ -28,10 +28,41 @@ router.post('/', async (req, res, next) => {
                 message: "Internal Server Error"
             });
         } else if (check_result.length === 1) {
+            console.log(secret_key.key);
+
             const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
             if (cipher.toString('hex') === check_result[0].passwd) {
+                let token = jwt.sign(check_result[0].user_pk, check_result[0].mail);
+                console.log(check_result);
+                const decipher = await crypto.decipher('aes256', secret_key.key)(check_result[0].passwd, 'hex')
 
+                let result = [{
+                    mail: check_result[0].mail,
+                    name: check_result[0].name,
+                    passwd: decipher.toString(),
+                    birth: check_result[0].birth,
+                    sex: check_result[0].sex,
+                    hp: check_result[0].hp,
+                    img: check_result[0].img,
+                    flag: check_result[0].user_gb
+                }];
+
+                res.status(200).send({
+                    message: "Success To Sign In",
+                    token: token,
+                    data: result
+                });
+            } else {
+                res.status(401).send({
+                    message: "Fail To Sign In"
+                });
+                console.log("password error");
             }
+        } else {
+            res.status(401).send({
+                message: "Fail To Sign In"
+            });
+            console.log("id error");
         }
     }
 
