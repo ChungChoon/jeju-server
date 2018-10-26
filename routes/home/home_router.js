@@ -9,8 +9,13 @@ const express = require('express'),
 
 // router.use('/signup', sign_up);
 
+//모바일의 경우
+router.get('/m', async (req, res, next) => {
 
-router.get('/', async (req, res, next) => {
+});
+
+//WEB의 경우
+router.get('/p', async (req, res, next) => {
 
 });
 

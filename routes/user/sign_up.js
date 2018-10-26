@@ -16,11 +16,18 @@ router.post('/', async (req, res, next) => {
         birth,
         sex,
         hp,
-        hope,
-        interest
+        wallet,
+        private_key,
+        // hope,
+        // interest
     } = req.body;
 
-    if (check.checkNull([mail, name, passwd, birth, sex, hope, interest])) {
+    if (check.checkNull([mail, name, passwd, birth, sex, hp,
+            wallet,
+            private_key,
+            // hope,
+            // interest
+        ])) {
         res.status(400).send({
             message: "Null Value"
         })
@@ -46,30 +53,34 @@ router.post('/', async (req, res, next) => {
             // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 2]);
 
             //사용자의 비밀번호를 지갑 비밀번호와 같은 것으로 설정하기 때문에 후에 복호화가 가능해야한다 그래서 양방향 암호화방식을 선택하여 진행함
-            const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
+            const cipher1 = await crypto.cipher('aes256', secret_key.key)(passwd);
+            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
             // const cipher_result = cipher.toString('hex');
 
-            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher.toString('hex'), 'secret_key', birth, sex, hp, '12134', 2]);
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 2]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
                     message: "Internal Server Error"
                 });
             } else {
-                console.log(insert_result1.insertId);
-                let user_idx = insert_result1.insertId;
-                let student_insert_query = `insert into student (user_fk, hope, interest) values (?, ?, ?)`;
-                let insert_result2 = await db.queryParamArr(student_insert_query, [user_idx, hope, interest]);
-                if (!insert_result2) { // 쿼리수행중 에러가 있을 경우
-                    res.status(500).send({
-                        message: "Internal Server Error"
-                    });
-                } else {
-                    res.status(200).send({
-                        message: "Success To Sign Up"
-                    })
-                }
+                // console.log(insert_result1.insertId);
+                // let user_idx = insert_result1.insertId;
+                // let student_insert_query = `insert into student (user_fk, hope, interest) values (?, ?, ?)`;
+                // let insert_result2 = await db.queryParamArr(student_insert_query, [user_idx, hope, interest]);
+                // if (!insert_result2) { // 쿼리수행중 에러가 있을 경우
+                //     res.status(500).send({
+                //         message: "Internal Server Error"
+                //     });
+                // } else {
+                //     res.status(200).send({
+                //         message: "Success To Sign Up"
+                //     })
+                // }
+                res.status(200).send({
+                    message: "Success To Sign Up"
+                })
             }
         }
     }
@@ -84,13 +95,21 @@ router.post('/farmer', async (req, res, next) => {
         sex,
         hp,
         career,
+        wallet,
+        private_key,
         farm_name,
         farm_num,
         farm_addr,
-        farm_subject,
+        // farm_subject,
     } = req.body;
 
-    if (check.checkNull([mail, name, passwd, birth, sex, career])) {
+    if (check.checkNull([mail, name, passwd, birth, sex, career, wallet,
+            private_key,
+            farm_name,
+            farm_num,
+            farm_addr,
+            // farm_subject
+        ])) {
         res.status(400).send({
             message: "Null Value"
         })
@@ -115,11 +134,12 @@ router.post('/farmer', async (req, res, next) => {
             // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 1]);
 
-            const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
+            const cipher1 = await crypto.cipher('aes256', secret_key.key)(passwd);
+            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
             // const cipher_result = cipher.toString('hex');
 
-            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher.toString('hex'), 'secret_key', birth, sex, hp, '12134', 1]);
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
@@ -137,8 +157,8 @@ router.post('/farmer', async (req, res, next) => {
                 } else {
                     console.log(insert_result2.insertId);
                     let farmer_idx = insert_result2.insertId;
-                    let farm_insert_query = `insert into farm (farmer_fk, name, reg_num, addr, subject) values (?, ?, ?, ?, ?)`;
-                    let insert_result3 = await db.queryParamArr(farm_insert_query, [farmer_idx, farm_name, farm_num, farm_addr, farm_subject]);
+                    let farm_insert_query = `insert into farm (farmer_fk, name, reg_num, addr) values (?, ?, ?, ?)`;
+                    let insert_result3 = await db.queryParamArr(farm_insert_query, [farmer_idx, farm_name, farm_num, farm_addr]);
                     if (!insert_result3) { // 쿼리수행중 에러가 있을 경우
                         res.status(500).send({
                             message: "Internal Server Error"

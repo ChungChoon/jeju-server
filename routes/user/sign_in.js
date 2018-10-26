@@ -34,12 +34,14 @@ router.post('/', async (req, res, next) => {
             if (cipher.toString('hex') === check_result[0].passwd) {
                 let token = jwt.sign(check_result[0].user_pk, check_result[0].mail);
                 console.log(check_result);
-                const decipher = await crypto.decipher('aes256', secret_key.key)(check_result[0].passwd, 'hex')
+                const decipher1 = await crypto.decipher('aes256', secret_key.key)(check_result[0].passwd, 'hex')
+                const decipher2 = await crypto.decipher('aes256', secret_key.key)(check_result[0].private_key, 'hex')
 
                 let result = [{
                     mail: check_result[0].mail,
                     name: check_result[0].name,
-                    passwd: decipher.toString(),
+                    passwd: decipher1.toString(),
+                    private_key: decipher2.toString(),
                     birth: check_result[0].birth,
                     sex: check_result[0].sex,
                     hp: check_result[0].hp,
