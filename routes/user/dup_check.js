@@ -11,7 +11,7 @@ router.post('/mail', async (req, res, next) => {
 
     if (check.checkNull([mail])) {
         res.status(400).json({
-            msg: 'Null Value'
+            message: 'Null Value'
         });
     } else {
         let check_query = `select * from user where mail = ?`;
@@ -19,15 +19,15 @@ router.post('/mail', async (req, res, next) => {
         let check_result = await db.queryParamArr(check_query, [mail]);
         if (!check_result) {
             res.status(500).json({
-                msg: "Internal Server Error"
+                message: "Internal Server Error"
             });
         } else if (check_result.length >= 1) {
             res.status(200).json({
-                msg: "duplication"
+                message: "duplication"
             });
         } else {
             res.status(200).json({
-                msg: "avaliable"
+                message: "avaliable"
             });
         }
     }

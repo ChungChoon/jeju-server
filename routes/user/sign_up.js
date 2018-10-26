@@ -47,10 +47,10 @@ router.post('/', async (req, res, next) => {
 
             //사용자의 비밀번호를 지갑 비밀번호와 같은 것으로 설정하기 때문에 후에 복호화가 가능해야한다 그래서 양방향 암호화방식을 선택하여 진행함
             const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
-            const cipher_result = cipher.toString('hex');
+            // const cipher_result = cipher.toString('hex');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher_result, 'secret_key', birth, sex, hp, '12134', 2]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher.toString('hex'), 'secret_key', birth, sex, hp, '12134', 2]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
