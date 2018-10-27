@@ -5,8 +5,10 @@ const express = require('express'),
     db = require('../../module/db_transction');
 
 const lecture_create = require('./lecture_create');
+const lecture_apply = require('./lecture_apply');
 
 router.use('/create', lecture_create);
+router.use('/apply', lecture_apply);
 
 router.get('/', async (req, res, next) => {
     let select_query = `
