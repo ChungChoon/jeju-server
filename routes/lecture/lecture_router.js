@@ -9,8 +9,11 @@ const lecture_create = require('./lecture_create');
 router.use('/create', lecture_create);
 
 router.get('/', async (req, res, next) => {
-    let select_query = `select a.user_pk, a.mail, a.name, a.birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.* from farmer_info a, lecture b, lecture_owner c where a.user_pk = c.user_fk and c.lecture_fk =b.lecture_pk`;
-    // let select_query = `select a.user_pk, a.mail, a.name, a.birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, b.* from farmer_info a, lecture b, lecture_owner c where a.user_pk = c.user_fk and c.lecture_fk =b.lecture_pk`;
+    let select_query = `
+        select a.user_pk, a.mail, a.name, date_format(a.birth, "%Y-%m-%d") as birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.title, b.target, b.kind, b.period, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.curriculum, b.intro, b.limit_num, b.price, b.apply 
+        from farmer_info a, lecture b, lecture_owner c 
+        where a.user_pk = c.user_fk  and b.lecture_pk = c.lecture_fk
+        `
     let select_result = await db.queryParamNone(select_query);
 
     if (!select_result) {
