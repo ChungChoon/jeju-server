@@ -32,7 +32,7 @@ router.post('/', async (req, res, next) => {
         } else {
             let lecture_id = req.body.lecture_id;
             let attendants = req.body.attendants;
-            console.log(lecture_id);
+            // console.log(lecture_id);
 
             if (check.checkNull([lecture_id])) {
                 res.status(400).json({
@@ -52,10 +52,28 @@ router.post('/', async (req, res, next) => {
                             message: "no access"
                         });
                     } else {
-                        if (attendants.length === 0) {
-                            res.status(200).json({
-                                message: "ok"
-                            });
+                        let student_query;
+                        let student_result;
+                        let update_query;
+                        let update_result;
+
+                        for (let index = 0; index < attendants.length; index++) {
+                            student_query = `select * from apply_lecture where user_fk = ? and lecture_fk = ?`;
+                            student_result = await db.queryParamArr(student_query, [attendants[index], lecture_id]);
+                            if (!student_result || student_result.length === 0) {
+                                continue;
+                            } else {
+                                update_query = `UPDATE apply_lecture SET attend_cnt = attend_cnt+1 WHERE user_fk = ? and lecture_fk = ?;`
+                                update_result = await db.queryParamArr(update_query, [attendants[index], lecture_id]);
+                                if (!update_result) {
+                                    continue;
+                                }
+                            }
+                        }
+                        if (!update_result) {
+                            res.status(500).send({
+                                message: "Internal Server Error"
+                            })
                         } else {
                             res.status(200).json({
                                 message: "success to check lecture"
