@@ -31,6 +31,7 @@ router.post('/', async (req, res, next) => {
             });
         } else {
             let lecture_id = req.body.lecture_id;
+            let attendants = req.body.attendants;
             console.log(lecture_id);
 
             if (check.checkNull([lecture_id])) {
@@ -51,9 +52,15 @@ router.post('/', async (req, res, next) => {
                             message: "no access"
                         });
                     } else {
-                        res.status(200).json({
-                            message: "success to check lecture"
-                        })
+                        if (attendants.length === 0) {
+                            res.status(200).json({
+                                message: "ok"
+                            });
+                        } else {
+                            res.status(200).json({
+                                message: "success to check lecture"
+                            })
+                        }
                     }
                 }
             }
