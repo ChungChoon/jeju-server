@@ -8,6 +8,7 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   routes = require('./routes/index'),
   users = require('./routes/users'),
+  cors = require('cors'),
   app = express();
 
 // view engine setup
@@ -18,17 +19,23 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser()); 
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+//cors
+app.use(cors());
+
 app.use('/', routes);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   let err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
