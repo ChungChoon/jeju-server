@@ -56,7 +56,8 @@ router.post('/', async (req, res, next) => {
                     curriculum,
                     intro,
                     limit_num,
-                    price
+                    price,
+                    curri_count
                 } = req.body;
 
                 if (check.checkNull([title,
@@ -69,7 +70,8 @@ router.post('/', async (req, res, next) => {
                         curriculum,
                         intro,
                         limit_num,
-                        price
+                        price,
+                        curri_count
                     ])) {
                     res.status(400).json({
                         message: "Null Value"
@@ -85,7 +87,10 @@ router.post('/', async (req, res, next) => {
                     curriculum,
                     intro,
                 limit_num,
-                price) values (?, ?, ?, ? ,?, ?, ?, ?, ?, ?, ?);`;
+                price,
+            curri_count
+        ) values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?);
+            `;
                     let insert_lecture_result = await db.queryParamArr(insert_lecture, [title,
                         target,
                         kind,
@@ -96,7 +101,8 @@ router.post('/', async (req, res, next) => {
                         curriculum,
                         intro,
                         limit_num,
-                        price
+                        price,
+                        curri_count
                     ]);
 
                     if (!insert_lecture_result) { // 쿼리수행중 에러가 있을 경우
