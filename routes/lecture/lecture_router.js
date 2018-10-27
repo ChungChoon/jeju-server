@@ -9,7 +9,8 @@ const lecture_create = require('./lecture_create');
 router.use('/create', lecture_create);
 
 router.get('/', async (req, res, next) => {
-    let select_query = `select a.user_pk, a.mail, a.name, a.birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, b.* from farmer_info a, lecture b, lecture_owner c where a.user_pk = c.user_fk and c.lecture_fk =b.lecture_pk`;
+    let select_query = `select a.user_pk, a.mail, a.name, a.birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.* from farmer_info a, lecture b, lecture_owner c where a.user_pk = c.user_fk and c.lecture_fk =b.lecture_pk`;
+    // let select_query = `select a.user_pk, a.mail, a.name, a.birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, b.* from farmer_info a, lecture b, lecture_owner c where a.user_pk = c.user_fk and c.lecture_fk =b.lecture_pk`;
     let select_result = await db.queryParamNone(select_query);
 
     if (!select_result) {
