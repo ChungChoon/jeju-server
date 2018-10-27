@@ -59,6 +59,7 @@ router.post('/', async (req, res, next) => {
                     price,
                     curri_count
                 } = req.body;
+                console.log(req.body);
 
                 if (check.checkNull([title,
                         target,
