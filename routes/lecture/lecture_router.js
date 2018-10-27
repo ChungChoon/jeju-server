@@ -27,6 +27,6 @@ router.get('/', async (req, res, next) => {
             data: select_result
         })
     }
-})
+});
 
 module.exports = router;
