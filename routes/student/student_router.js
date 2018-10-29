@@ -5,6 +5,8 @@ const express = require('express'),
     db = require('../../module/db_transction'),
     jwt = require('../../module/jwt');
 
+
+//나의 강의목록 (학생 계정)
 router.get('/', async (req, res, next) => {
 
     let token = req.headers.token;
