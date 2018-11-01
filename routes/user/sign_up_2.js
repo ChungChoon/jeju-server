@@ -46,19 +46,19 @@ router.post('/', async (req, res, next) => {
             });
 
         } else {
-            // const salt = await crypto.randomBytes(32);
-            // const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            const salt = await crypto.randomBytes(32);
+            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
 
-            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 2]);
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 2]);
 
             //사용자의 비밀번호를 지갑 비밀번호와 같은 것으로 설정하기 때문에 후에 복호화가 가능해야한다 그래서 양방향 암호화방식을 선택하여 진행함
-            const cipher1 = await crypto.cipher('aes256', secret_key.key)(passwd);
-            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            // const cipher1 = await crypto.cipher('aes256', secret_key.key)(passwd);
+            // const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
             // const cipher_result = cipher.toString('hex');
 
-            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('base64'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('base64'), 2]);
+            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('base64'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('base64'), 2]);
             // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 2]);
 
@@ -130,18 +130,18 @@ router.post('/farmer', async (req, res, next) => {
             });
 
         } else {
-            // const salt = await crypto.randomBytes(32);
-            // const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            const salt = await crypto.randomBytes(32);
+            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
 
-            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 1]);
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, '12134', 1]);
 
-            const cipher1 = await crypto.cipher('aes256', secret_key.key)(passwd);
-            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            // const cipher1 = await crypto.cipher('aes256', secret_key.key)(passwd);
+            // const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
             // const cipher_result = cipher.toString('hex');
 
-            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('base64'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('base64'), 1]);
+            // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('base64'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('base64'), 1]);
             // let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             // let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, cipher1.toString('hex'), 'secret_key', birth, sex, hp, wallet, cipher2.toString('hex'), 1]);
 
