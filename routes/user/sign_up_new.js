@@ -136,7 +136,7 @@ router.post('/farmer', async (req, res, next) => {
             const cipher_result = cipher2.toString('base64');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet_addr, cipher_result, 1]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({

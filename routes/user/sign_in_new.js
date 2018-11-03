@@ -28,20 +28,18 @@ router.post('/', async (req, res, next) => {
                 message: "Internal Server Error"
             });
         } else if (check_result.length === 1) {
-            console.log(secret_key.key);
-
-            const cipher = await crypto.cipher('aes256', secret_key.key)(passwd);
-            if (cipher.toString('base64') === check_result[0].passwd) {
+            console.log(check_result);
+            let hashed_pw = await crypto.pbkdf2(passwd, check_result[0].salt, 100000, 32, 'sha512');
+            if (hashed_pw.toString('base64') === check_result[0].passwd) {
                 let token = jwt.sign(check_result[0].user_pk, check_result[0].mail);
                 console.log(check_result);
-                const decipher1 = await crypto.decipher('aes256', secret_key.key)(check_result[0].passwd, 'base64');
                 const decipher2 = await crypto.decipher('aes256', secret_key.key)(check_result[0].private_key, 'base64');
+                console.log(decipher2.toString());
 
                 let result = [{
                     mail: check_result[0].mail,
                     name: check_result[0].name,
-                    passwd: decipher1.toString('base64'),
-                    private_key: decipher2.toString('base64'),
+                    private_key: decipher2.toString(),
                     birth: check_result[0].birth,
                     sex: check_result[0].sex,
                     hp: check_result[0].hp,
@@ -69,5 +67,7 @@ router.post('/', async (req, res, next) => {
     }
 
 });
+
+
 
 module.exports = router;
