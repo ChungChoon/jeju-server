@@ -46,14 +46,33 @@ router.post('/', async (req, res, next) => {
             });
 
         } else {
+            const salt = await crypto.randomBytes(32);
+            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            const cipher_result = cipher2.toString('base64');
+
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, passwd, 'secret_key', birth, sex, hp, wallet, private_key, 2]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
+
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
                     message: "Internal Server Error"
                 });
             } else {
+                // console.log(insert_result1.insertId);
+                // let user_idx = insert_result1.insertId;
+                // let student_insert_query = `insert into student (user_fk, hope, interest) values (?, ?, ?)`;
+                // let insert_result2 = await db.queryParamArr(student_insert_query, [user_idx, hope, interest]);
+                // if (!insert_result2) { // 쿼리수행중 에러가 있을 경우
+                //     res.status(500).send({
+                //         message: "Internal Server Error"
+                //     });
+                // } else {
+                //     res.status(200).send({
+                //         message: "Success To Sign Up"
+                //     })
+                // }
                 res.status(200).send({
                     message: "Success To Sign Up"
                 })
@@ -104,8 +123,13 @@ router.post('/farmer', async (req, res, next) => {
             });
 
         } else {
+            const salt = await crypto.randomBytes(32);
+            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            const cipher_result = cipher2.toString('base64');
+
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, passwd, 'secret_key', birth, sex, hp, wallet, private_key, 1]);
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
@@ -140,5 +164,13 @@ router.post('/farmer', async (req, res, next) => {
     }
 });
 
+router.get('/hash', async (req, res, next) => {
+    let pass = "비밀번호 123123123123오륙칠팔구";
+    const cipher2 = await crypto.cipher('aes256', secret_key.key)(pass);
+    const cipher_result = cipher2.toString('base64');
+    console.log(cipher_result);
+    const decipher2 = await crypto.decipher('aes256', secret_key.key)(cipher_result, 'base64');
+    console.log(decipher2.toString());
+});
 
 module.exports = router;

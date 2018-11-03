@@ -3,14 +3,14 @@
 const express = require('express'),
     router = express.Router();
 
-const sign_up_new = require('./sign_up_new');
-const sign_in_new = require('./sign_in_new');
+// const sign_up_new = require('./sign_up_new');
+// const sign_in_new = require('./sign_in_new');
 const sign_up = require('./sign_up');
 const sign_in = require('./sign_in');
 const dup_check = require('./dup_check');
 
-router.use('/signupnew', sign_up_new);
-router.use('/signinnew', sign_in_new);
+// router.use('/signupnew', sign_up_new);
+// router.use('/signinnew', sign_in_new);
 router.use('/signup', sign_up);
 router.use('/signin', sign_in);
 router.use('/dupcheck', dup_check);
