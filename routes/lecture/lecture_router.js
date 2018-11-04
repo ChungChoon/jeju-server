@@ -7,12 +7,12 @@ const express = require('express'),
 const lecture_create = require('./lecture_create');
 const lecture_apply = require('./lecture_apply');
 const lecture_attend = require('./lecture_attend');
-const lecture_vote = require('./lecture_vote');
+const lecture_evaluate = require('./lecture_evaluate');
 
 router.use('/create', lecture_create);
 router.use('/apply', lecture_apply);
 router.use('/attend', lecture_attend);
-router.use('/vote', lecture_vote);
+router.use('/evaluate', lecture_evaluate);
 
 router.get('/', async (req, res, next) => {
     let select_query = `
