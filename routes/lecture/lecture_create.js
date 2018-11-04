@@ -89,7 +89,8 @@ router.post('/', async (req, res, next) => {
                     intro,
                 limit_num,
                 price,
-            curri_count
+            curri_count,
+            owner_fk
         ) values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?);
             `;
                     let insert_lecture_result = await db.queryParamArr(insert_lecture, [title,
@@ -103,7 +104,8 @@ router.post('/', async (req, res, next) => {
                         intro,
                         limit_num,
                         price,
-                        curri_count
+                        curri_count,
+                        decoded.user_idx
                     ]);
 
                     if (!insert_lecture_result) { // 쿼리수행중 에러가 있을 경우
@@ -111,18 +113,21 @@ router.post('/', async (req, res, next) => {
                             message: "Internal Server Error"
                         });
                     } else {
-                        let lecture_idx = insert_lecture_result.insertId;
-                        let lecture_insert2 = `insert into lecture_owner (user_fk, lecture_fk) values (?, ?)`;
-                        let insert_lecture_result2 = await db.queryParamArr(lecture_insert2, [decoded.user_idx, lecture_idx]);
-                        if (!insert_lecture_result2) { // 쿼리수행중 에러가 있을 경우
-                            res.status(500).send({
-                                message: "Internal Server Error"
-                            });
-                        } else {
-                            res.status(200).send({
-                                message: "Success To Create Lecture"
-                            })
-                        }
+                        res.status(200).send({
+                            message: "Success To Create Lecture"
+                        })
+                        // let lecture_idx = insert_lecture_result.insertId;
+                        // let lecture_insert2 = `insert into lecture_owner (user_fk, lecture_fk) values (?, ?)`;
+                        // let insert_lecture_result2 = await db.queryParamArr(lecture_insert2, [decoded.user_idx, lecture_idx]);
+                        // if (!insert_lecture_result2) { // 쿼리수행중 에러가 있을 경우
+                        //     res.status(500).send({
+                        //         message: "Internal Server Error"
+                        //     });
+                        // } else {
+                        //     res.status(200).send({
+                        //         message: "Success To Create Lecture"
+                        //     })
+                        // }
                     }
                 }
             }
