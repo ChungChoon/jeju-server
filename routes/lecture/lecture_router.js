@@ -39,4 +39,38 @@ router.get('/', async (req, res, next) => {
     }
 });
 
+//강의 상세조회
+router.get('/:id', async (req, res, next) => {
+    let token = req.headers.token;
+    let lecture_id = req.params.id;
+    if (!lecture_id) {
+        res.status(400).send({
+            message: "Null Value"
+        });
+    } else {
+        if (token) {
+            let decoded = jwt.verify(token);
+            if (decoded === 10) {
+                res.status(500).json({
+                    message: "token err",
+                    expired: 1
+                });
+                return
+            }
+            if (decoded === -1) {
+                res.status(500).json({
+                    message: "token err"
+                });
+            } else {
+                let select_query = ``;
+                let select_result = await db.queryParamArr(select_query, [req.params.id])
+            }
+        } else {
+
+        }
+    }
+
+
+})
+
 module.exports = router;

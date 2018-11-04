@@ -67,8 +67,8 @@ router.get('/', async (req, res, next) => {
             }
         }
     }
-
 });
+
 // router.get('/', async (req, res, next) => {
 //     let token = req.headers.token;
 

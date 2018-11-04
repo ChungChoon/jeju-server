@@ -91,7 +91,7 @@ router.post('/', async (req, res, next) => {
                 price,
             curri_count,
             owner_fk
-        ) values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?);
+        ) values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?, ?);
             `;
                     let insert_lecture_result = await db.queryParamArr(insert_lecture, [title,
                         target,
