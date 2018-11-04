@@ -31,13 +31,13 @@ router.get('/', async (req, res, next) => {
             });
         } else {
             let select_query = `
-                select a.user_pk, a.name, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.title, b.target, b.kind, b.period, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.curriculum, b.intro, b.limit_num, b.price, b.apply
-                from farmer_info a, lecture b, lecture_owner c, apply_lecture d
+                select a.user_pk, a.name, a.img, a.user_gb, a.farm_name, a.farm_pk, a.subject, a.kind, b.title, b.target, b.kind, b.period, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, b.img, b.limit_num, b.price, b.apply
+                from farmer_info a, lecture b, lecture_owner c, lecture_apply d
                 where a.user_pk = c.user_fk and b.lecture_pk = c.lecture_fk and a.user_pk = 22
                 `;
             // let select_query = `
             //     select a.user_pk, a.mail, a.name, date_format(a.birth, "%Y-%m-%d") as birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.title, b.target, b.kind, b.period, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.curriculum, b.intro, b.limit_num, b.price, b.apply
-            //     from farmer_info a, lecture b, lecture_owner c, apply_lecture d
+            //     from farmer_info a, lecture b, lecture_owner c, lecture_apply d
             //     where a.user_pk = c.user_fk and b.lecture_pk = c.lecture_fk and a.user_pk = 22
             //     `;
             let select_result = await db.queryParamNone(select_query);
@@ -82,7 +82,7 @@ router.get('/detail/:lecture_id', async (req, res, next) => {
         } else {
             let select_query = `
                 select a.user_pk, a.mail, a.name, date_format(a.birth, "%Y-%m-%d") as birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.title, b.target, b.kind, b.period, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.curriculum, b.intro, b.limit_num, b.price, b.apply
-                from farmer_info a, lecture b, lecture_owner c, apply_lecture d
+                from farmer_info a, lecture b, lecture_owner c, lecture_apply d
                 where a.user_pk = c.user_fk and b.lecture_pk = c.lecture_fk and a.user_pk = 22
                 `
             let select_result = await db.queryParamNone(select_query);

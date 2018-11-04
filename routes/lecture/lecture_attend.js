@@ -58,12 +58,12 @@ router.post('/', async (req, res, next) => {
                         let update_result;
 
                         for (let index = 0; index < attendants.length; index++) {
-                            student_query = `select * from apply_lecture where user_fk = ? and lecture_fk = ?`;
+                            student_query = `select * from lecture_apply where user_fk = ? and lecture_fk = ?`;
                             student_result = await db.queryParamArr(student_query, [attendants[index], lecture_id]);
                             if (!student_result || student_result.length === 0) {
                                 continue;
                             } else {
-                                update_query = `UPDATE apply_lecture SET attend_cnt = attend_cnt+1 WHERE user_fk = ? and lecture_fk = ?;`
+                                update_query = `UPDATE lecture_apply SET attend_cnt = attend_cnt+1 WHERE user_fk = ? and lecture_fk = ?;`
                                 update_result = await db.queryParamArr(update_query, [attendants[index], lecture_id]);
                                 if (!update_result) {
                                     continue;

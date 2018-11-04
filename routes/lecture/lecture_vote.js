@@ -40,7 +40,7 @@ router.post('/', async (req, res, next) => {
             } else {
                 let update_query;
                 let update_result;
-                update_query = `UPDATE apply_lecture SET state = 1 WHERE user_fk = ? and lecture_fk = ?;`
+                update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?;`
                 update_result = await db.queryParamArr(update_query, [decoded.user_idx, lecture_id]);
                 if (!update_result) {
                     res.status(500).json({

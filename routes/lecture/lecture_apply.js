@@ -38,7 +38,7 @@ router.post('/', async (req, res, next) => {
                     message: "Null Value"
                 });
             } else {
-                let insert_query = `insert into apply_lecture (user_fk, lecture_fk) values (?, ?)`;
+                let insert_query = `insert into lecture_apply (user_fk, lecture_fk) values (?, ?)`;
                 let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id]);
                 if (!insert_result) {
                     res.status(500).json({
