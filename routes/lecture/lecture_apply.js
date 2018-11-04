@@ -30,16 +30,19 @@ router.post('/', async (req, res, next) => {
                 message: "token err"
             });
         } else {
-            let lecture_id = req.body.lecture_id;
+            let {
+                lecture_id,
+                price
+            } = req.body;
             console.log(lecture_id);
 
-            if (check.checkNull([lecture_id])) {
+            if (check.checkNull([lecture_id, price])) {
                 res.status(400).json({
                     message: "Null Value"
                 });
             } else {
-                let insert_query = `insert into lecture_apply (user_fk, lecture_fk) values (?, ?)`;
-                let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id]);
+                let insert_query = `insert into lecture_apply (user_fk, lecture_fk, price) values (?, ?, ?)`;
+                let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id, price]);
                 if (!insert_result) {
                     res.status(500).json({
                         message: "Internal server Error!"
