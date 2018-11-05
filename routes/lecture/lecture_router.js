@@ -2,7 +2,8 @@
 
 const express = require('express'),
     router = express.Router(),
-    db = require('../../module/db_transction');
+    db = require('../../module/db_transction'),
+    jwt = require('../../module/jwt');
 
 const lecture_create = require('./lecture_create');
 const lecture_apply = require('./lecture_apply');
