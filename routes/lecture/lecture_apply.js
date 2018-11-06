@@ -39,7 +39,7 @@ router.post('/', async (req, res, next) => {
                     message: "Null Value"
                 });
             } else {
-                let select_query = `select idx from lecture_idx where lecture_id = ? order by idx desc limit 1`;
+                let select_query = `select degree_pk, idx from lecture_idx where lecture_id = ? order by idx desc limit 1`;
                 let select_result = await db.queryParamArr(select_query, [lecture_id]);
                 if (!select_result) {
                     res.status(500).json({
@@ -47,18 +47,27 @@ router.post('/', async (req, res, next) => {
                     });
                 }
                 else {
-                    let insert_query = `insert into lecture_apply (user_fk, lecture_fk, price, degree_fk) values (?, ?, ?, ?)`;
-                    let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id, price, select_result[0]]);
-                    if (!insert_result) {
-                        res.status(500).json({
-                            message: "Internal Server Error"
+                    if ((idx !== 0 && select_result[0].length === 0) || select_result[0].idx !== idx) {
+                        res.status(200).json({
+                            message: "can't apply"
                         });
                     }
                     else {
-                        res.status(200).json({
-                            message: "success to apply lecture"
-                        })
+                        let idx_fk = select_result[0].degree_pk || 0;
+                        let insert_query = `insert into lecture_apply (user_fk, lecture_fk, price, degree_fk) values (?, ?, ?, ?)`;
+                        let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id, price, idx_fk]);
+                        if (!insert_result) {
+                            res.status(500).json({
+                                message: "Internal Server Error"
+                            });
+                        }
+                        else {
+                            res.status(200).json({
+                                message: "success to apply lecture"
+                            })
+                        }
                     }
+
                 }
             }
         }
