@@ -33,47 +33,28 @@ router.post('/', async (req, res, next) => {
                 price,
                 idx
             } = req.body;
-            console.log(lecture_id);
 
             if (check.checkNull([lecture_id, price, idx])) {
                 res.status(400).json({
                     message: "Null Value"
                 });
             } else {
-                let insert_result1;
-                let idx_fk = 0;
-                if (idx !== 0) {
-                    let insert_query1 = `insert into lecture_idx (lecture_id, idx) values (?, ?)`;
-                    insert_result1 = await db.queryParamArr(insert_query1, [lecture_id, idx]);
-                    if (!insert_result1) {
-                        res.status(500).json({
-                            message: "Internal server Error!"
-                        });
-                    }
-                    else {
-                        idx_fk = insert_result1.insertId;
-                            let insert_query = `insert into lecture_apply (user_fk, lecture_fk, price, degree_fk) values (?, ?, ?, ?)`;
-                            let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id, price, idx_fk]);
-                            if (!insert_result) {
-                                res.status(500).json({
-                                    message: "Internal server Error!"
-                                });
-                            }
-                            else {
-                                res.status(200).json({
-                                    message: "success to apply lecture"
-                                })
-                            }
-                    }
+                let select_query = `select idx from lecture_idx where lecture_id = ? order by idx desc limit 1`;
+                let select_result = await db.queryParamArr(select_query, [lecture_id]);
+                if (!select_result) {
+                    res.status(500).json({
+                        message: "Internal Server Error"
+                    });
                 }
                 else {
                     let insert_query = `insert into lecture_apply (user_fk, lecture_fk, price, degree_fk) values (?, ?, ?, ?)`;
-                    let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id, price, idx_fk]);
+                    let insert_result = await db.queryParamArr(insert_query, [decoded.user_idx, lecture_id, price, select_result[0]]);
                     if (!insert_result) {
                         res.status(500).json({
-                            message: "Internal server Error!"
+                            message: "Internal Server Error"
                         });
-                    } else {
+                    }
+                    else {
                         res.status(200).json({
                             message: "success to apply lecture"
                         })

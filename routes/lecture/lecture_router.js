@@ -79,8 +79,8 @@ router.get('/:lectureId', async (req, res, next) => {
                     });
                 } else  {
                     let select_query2 = `
-                    select a.user_pk, a.name, a.img, b.title, b.content 
-                    from user a, lecture_review b 
+                    select a.user_pk, a.name, a.img, b.content, date_format(b.written_date, "%Y-%m-%d") as written_date 
+                    from user a, lecture_review b
                     where a.user_pk = b.user_fk and b.lecture_fk = ?
                     `;
                     let select_result2 = await db.queryParamArr(select_query2, [lecture_id]);
@@ -113,7 +113,7 @@ router.get('/:lectureId', async (req, res, next) => {
                 });
             } else  {
                 let select_query2 = `
-                    select a.user_pk, a.name, a.img, b.title, b.content 
+                    select a.user_pk, a.name, a.img, b.content, date_format(b.written_date, "%Y-%m-%d") as written_date 
                     from user a, lecture_review b 
                     where a.user_pk = b.user_fk and b.lecture_fk = ?
                     `;
