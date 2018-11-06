@@ -35,28 +35,45 @@ router.post('/', async (req, res, next) => {
                     message: "Null Value"
                 });
             } else {
-                let update_query;
-                let update_result;
-                update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
-                // update_result = await db.queryParamArr(update_query, [decoded.user_idx, lecture_id]);
-                let insert_query;
-                insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, title, content) values (?, ?, ?, ?)`;
-                const conn = await pool.getConnection();
-                await conn.beginTransaction();
-                await conn.query(update_query, [decoded.user_idx, lecture_id]);
-                await conn.query(insert_query, [lecture_id, decoded.user_idx, title, content]);
-                let transaction_result = await conn.commit();
-                conn.release();
-                // let transaction_result = await db.transactionControll(2, [update_query, [decoded.user_idx, lecture_id], insert_query, [decoded.user_idx, lecture_id, title, content]]);
-                if (!transaction_result) {
-                    res.status(500).json({
-                        message: "Internal server Error!"
-                    });
-                } else {
+                // let update_query;
+                // let update_result;
+                // update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
+                // // update_result = await db.queryParamArr(update_query, [decoded.user_idx, lecture_id]);
+                // let insert_query;
+                // insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, title, content) values (?, ?, ?, ?)`;
+                // const conn = await pool.getConnection();
+                // await conn.beginTransaction();
+                // await conn.query(update_query, [decoded.user_idx, lecture_id]);
+                // await conn.query(insert_query, [lecture_id, decoded.user_idx, title, content]);
+                // let transaction_result = await conn.commit();
+                // conn.release();
+
+                let transaction_result = db.transactionControll(async (connection) => {
+                    let update_query;
+                    let update_result;
+                    update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
+                    // update_result = await db.queryParamArr(update_query, [decoded.user_idx, lecture_id]);
+                    let insert_query;
+                    insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, title, content) values (?, ?, ?, ?)`;
+                    await connection.query(update_query, [decoded.user_idx, lecture_id]);
+                    await connection.query(insert_query, [lecture_id, decoded.user_idx, title, content]);
                     res.status(200).json({
                         message: "success to vote lecture"
                     })
-                }
+                }).catch(error => {
+                    return next(error)
+                });
+                // let transaction_result = await db.transactionControll(2, [update_query, [decoded.user_idx, lecture_id], insert_query, [decoded.user_idx, lecture_id, title, content]]);
+                // if (!transaction_result) {
+                //     res.status(500).json({
+                //         message: "Internal server Error!"
+                //     });
+                // } else {
+                //     console.log(transaction_result);
+                //res.status(200).json({
+                //                         message: "success to vote lecture"
+                //                     })
+                // }
             }
 
         }
