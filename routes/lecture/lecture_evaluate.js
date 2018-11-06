@@ -35,26 +35,9 @@ router.post('/', async (req, res, next) => {
                     message: "Null Value"
                 });
             } else {
-                // let update_query;
-                // let update_result;
-                // update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
-                // // update_result = await db.queryParamArr(update_query, [decoded.user_idx, lecture_id]);
-                // let insert_query;
-                // insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, title, content) values (?, ?, ?, ?)`;
-                // const conn = await pool.getConnection();
-                // await conn.beginTransaction();
-                // await conn.query(update_query, [decoded.user_idx, lecture_id]);
-                // await conn.query(insert_query, [lecture_id, decoded.user_idx, title, content]);
-                // let transaction_result = await conn.commit();
-                // conn.release();
-
                 let transaction_result = db.transactionControll(async (connection) => {
-                    let update_query;
-                    let update_result;
-                    update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
-                    // update_result = await db.queryParamArr(update_query, [decoded.user_idx, lecture_id]);
-                    let insert_query;
-                    insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, title, content) values (?, ?, ?, ?)`;
+                    let update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
+                    let insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, title, content) values (?, ?, ?, ?)`;
                     await connection.query(update_query, [decoded.user_idx, lecture_id]);
                     await connection.query(insert_query, [lecture_id, decoded.user_idx, title, content]);
                     res.status(200).json({
