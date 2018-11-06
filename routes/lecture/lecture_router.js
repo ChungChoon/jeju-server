@@ -78,10 +78,24 @@ router.get('/:lectureId', async (req, res, next) => {
                         message : "Internal Server Error"
                     });
                 } else  {
-                    res.status(200).json({
-                        message : "Success Get Lecture Detail",
-                        data: select_result[0]
-                    });
+                    let select_query2 = `
+                    select a.user_pk, a.name, a.img, b.title, b.content 
+                    from user a, lecture_review b 
+                    where a.user_pk = b.user_fk and b.lecture_fk = ?
+                    `;
+                    let select_result2 = await db.queryParamArr(select_query2, [lecture_id]);
+                    if (!select_result) {
+                        res.status(500).json({
+                            message : "Internal Server Error"
+                        });
+                    }
+                    else {
+                        res.status(200).json({
+                            message : "Success Get Lecture Detail",
+                            lecture_data: select_result[0],
+                            review_data: select_result2
+                        });
+                    }
                 }
             }
         } else {
@@ -98,10 +112,24 @@ router.get('/:lectureId', async (req, res, next) => {
                     message : "Internal Server Error"
                 });
             } else  {
-                res.status(200).json({
-                    message : "Success Get Lecture Detail",
-                    data: select_result[0]
-                });
+                let select_query2 = `
+                    select a.user_pk, a.name, a.img, b.title, b.content 
+                    from user a, lecture_review b 
+                    where a.user_pk = b.user_fk and b.lecture_fk = ?
+                    `;
+                let select_result2 = await db.queryParamArr(select_query2, [lecture_id]);
+                if (!select_result) {
+                    res.status(500).json({
+                        message : "Internal Server Error"
+                    });
+                }
+                else {
+                    res.status(200).json({
+                        message : "Success Get Lecture Detail",
+                        lecture_data: select_result[0],
+                        review_data: select_result2
+                    });
+                }
             }
         }
     }
