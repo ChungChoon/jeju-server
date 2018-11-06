@@ -4,8 +4,7 @@ const express = require('express'),
     router = express.Router(),
     db = require('../../module/db_transction'),
     check = require('../../module/check'),
-    jwt = require('../../module/jwt'),
-    pool = require('../../config/db_pool');
+    jwt = require('../../module/jwt');
 
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;
