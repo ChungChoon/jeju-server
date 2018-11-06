@@ -63,7 +63,7 @@ module.exports = {
 
     transactionControll : async (...args) => {
         // console.log("Transaction start")
-        var connection = await pool.getConnection();
+        const connection = await pool.getConnection();
 
         // console.log("Transaction : beginTransaction")
         await connection.beginTransaction();
@@ -73,15 +73,15 @@ module.exports = {
             // console.log("Transaction : rollback")
             await connection.rollback();
             // console.log("Transaction : releaseConnection")
-            pool.releaseConnection(connection)
+            pool.releaseConnection(connection);
             throw err
-        })
+        });
 
         // console.log("Transaction : commit")
         await connection.commit();
 
         // console.log("Transaction : releaseCOnnection")
-        pool.releaseConnection(connection)
+        pool.releaseConnection(connection);
 
         // console.log("Transaction : return")
         return result
