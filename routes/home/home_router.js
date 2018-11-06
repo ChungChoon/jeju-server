@@ -97,9 +97,9 @@ router.get('/', async (req, res, next) => {
                         where b.kind in (8, 9, 10, 11)
                         `;
 
-        let popular_result = await db.queryParamArr(popular_query, [decoded.user_idx]);
-        let offline_result = await db.queryParamArr(offline_query, [decoded.user_idx]);
-        let online_result = await db.queryParamArr(online_query, [decoded.user_idx]);
+        let popular_result = await db.queryParamNone(popular_query);
+        let offline_result = await db.queryParamNone(offline_query);
+        let online_result = await db.queryParamNone(online_query);
 
         if (!popular_result || !offline_result || !online_result) {
             res.status(500).json({

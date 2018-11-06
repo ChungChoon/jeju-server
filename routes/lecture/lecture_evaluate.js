@@ -30,10 +30,8 @@ router.post('/', async (req, res, next) => {
                 message: "token err"
             });
         } else {
-            let lecture_id = req.body.lecture_id;
-            console.log(lecture_id);
-
-            if (check.checkNull([lecture_id])) {
+            let {lecture_id, title, content} = req.body;
+            if (check.checkNull([lecture_id, title, content])) {
                 res.status(400).json({
                     message: "Null Value"
                 });
@@ -47,6 +45,7 @@ router.post('/', async (req, res, next) => {
                         message: "Internal server Error!"
                     });
                 } else {
+
                     res.status(200).json({
                         message: "success to vote lecture"
                     })
