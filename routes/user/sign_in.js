@@ -28,7 +28,7 @@ router.post('/', async (req, res, next) => {
                 message: "Internal Server Error"
             });
         } else if (check_result.length === 1) {
-            console.log(check_result);
+            // console.log(check_result);
             let hashed_pw = await crypto.pbkdf2(passwd, check_result[0].salt, 100000, 32, 'sha512');
             if (hashed_pw.toString('base64') === check_result[0].passwd) {
                 let token = jwt.sign(check_result[0].user_pk, check_result[0].mail);
