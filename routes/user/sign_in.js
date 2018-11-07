@@ -101,6 +101,7 @@ router.post('/', async (req, res, next) => {
                     mail: check_result[0].mail,
                     name: check_result[0].name,
                     // private_key: decipher2.toString(),
+                    wallet: check_result[0].wallet_addr,
                     birth: check_result[0].birth,
                     sex: check_result[0].sex,
                     hp: check_result[0].hp,

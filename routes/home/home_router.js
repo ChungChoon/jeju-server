@@ -79,7 +79,7 @@ router.get('/', async (req, res, next) => {
                         from farmer_info a 
                         join lecture b 
                         on a.user_pk = b.owner_fk
-                        order by apply
+                        order by apply desc
                         limit 6
                         `;
         let offline_query = `

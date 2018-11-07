@@ -15,31 +15,6 @@ router.use('/apply', lecture_apply);
 router.use('/attend', lecture_attend);
 router.use('/evaluate', lecture_evaluate);
 
-// router.get('/', async (req, res, next) => {
-//     let select_query = `
-//         select a.user_pk, a.mail, a.name, date_format(a.birth, "%Y-%m-%d") as birth, a.sex, a.hp, a.img, a.wallet_addr, a.user_gb, a.farmer_career, a.farm_name, a.reg_num, a.farm_pk, a.farm_addr, a.subject, a.kind, a.farm_img, b.title, b.target, b.kind, b.period, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.curriculum, b.intro, b.limit_num, b.price, b.apply
-//         from farmer_info a, lecture b, lecture_owner c
-//         where a.user_pk = c.user_fk  and b.lecture_pk = c.lecture_fk
-//         `;
-//     let select_result = await db.queryParamNone(select_query);
-//
-//     if (!select_result) {
-//         res.status(500).json({
-//             message: "Internal Server Error"
-//         });
-//     } else if (select_result.length === 0) {
-//         console.log(select_result[0]);
-//         res.status(200).json({
-//             message: "doesn's exist"
-//         })
-//     } else {
-//         res.status(200).json({
-//             message: "Success To Get Information",
-//             data: select_result
-//         })
-//     }
-// });
-
 //강의 상세조회
 router.get('/:lectureId', async (req, res, next) => {
     let token = req.headers.token;
@@ -90,11 +65,21 @@ router.get('/:lectureId', async (req, res, next) => {
                         });
                     }
                     else {
-                        res.status(200).json({
-                            message : "Success Get Lecture Detail",
-                            lecture_data: select_result[0],
-                            review_data: select_result2
-                        });
+                        let select_query3 = `select idx, degree_fk from lecture_idx where lecture_id = ?`;
+                        let select_result3 = await db.queryParamArr(select_query3, [lecture_id]);
+                        if (!select_result3) {
+                            res.status(500).json({
+                                message : "Internal Server Error"
+                            });
+                        }
+                        else  {
+                            res.status(200).json({
+                                message : "Success Get Lecture Detail",
+                                lecture_data: select_result[0],
+                                review_data: select_result2,
+                                lecture_idx: select_result3[0]
+                            });
+                        }
                     }
                 }
             }
