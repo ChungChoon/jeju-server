@@ -8,7 +8,9 @@ const express = require('express'),
     secret_key = require('../../config/secret_key'),
     jwt = require('../../module/jwt');
 
-//사용자 로그인
+/** @description 사용자로그인 - JWT 발급
+ * @method POST
+ */
 router.post('/', async (req, res, next) => {
     let {
         mail,

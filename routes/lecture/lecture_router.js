@@ -15,7 +15,9 @@ router.use('/apply', lecture_apply);
 router.use('/attend', lecture_attend);
 router.use('/evaluate', lecture_evaluate);
 
-//강의 상세조회
+/** @description 강의 상세조회 (로그인 여부에 따라 신청여부, 출석률을 추가적으로 보여준다.)
+ * @method GET
+ */
 router.get('/:lectureId', async (req, res, next) => {
     let token = req.headers.token;
     let lecture_id = req.params.lectureId;

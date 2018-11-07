@@ -6,7 +6,9 @@ const express = require('express'),
     jwt = require('../../module/jwt');
 
 
-//나의 강의목록 (학생 계정)
+/** @description 나의 강의 목록 (학생 계정)
+ * @method GET
+ */
 router.get('/', async (req, res, next) => {
 
     let token = req.headers.token;
@@ -39,7 +41,6 @@ router.get('/', async (req, res, next) => {
                 on c.lecture_fk = b.lecture_pk and c.user_fk = ?
                 `;
             let select_result = await db.queryParamArr(select_query, [decoded.user_idx]);
-
             if (!select_result) {
                 res.status(500).json({
                     message: "Internal Server Error"

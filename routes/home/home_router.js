@@ -10,7 +10,7 @@ const filter_lecture = require('./filter_lecture');
 router.use('/filter', filter_lecture);
 
 /** @description 모바일 메인화면 (인기강의 TOP 6, offline 강의, online 강의) - JWT 여부에 따라 응답 데이터 다름
- *
+ * @method GET
  */
 router.get('/', async (req, res, next) => {
     let token = req.headers.token;

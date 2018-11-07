@@ -7,7 +7,7 @@ const express = require('express'),
     jwt = require('../../module/jwt');
 
 /** @description 강의 평가 (수료 자격을 갖춘 학생이 한하여 트랜잭션발생 후 강의평가)
- *
+ * @method POST
  */
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;

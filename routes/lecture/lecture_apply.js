@@ -6,8 +6,8 @@ const express = require('express'),
     check = require('../../module/check'),
     jwt = require('../../module/jwt');
 
-/**
- * @description 강의 수강 ( 수강생 계정 )
+/** @description 강의 수강 ( 수강생 계정 )
+ * @method POST
  */
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;

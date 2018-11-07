@@ -7,7 +7,9 @@ const express = require('express'),
     crypto = require('crypto-promise'),
     secret_key = require('../../config/secret_key');
 
-
+/** @description 회원가입 - 일반 학생용
+ * @method POST
+ */
 router.post('/', async (req, res, next) => {
     let {
         mail,
@@ -81,6 +83,9 @@ router.post('/', async (req, res, next) => {
     }
 });
 
+/** @description 회원가입 - 농부 강사용
+ * @method POST
+ */
 router.post('/farmer', async (req, res, next) => {
     let {
         mail,
@@ -163,6 +168,7 @@ router.post('/farmer', async (req, res, next) => {
         }
     }
 });
+
 
 router.get('/hash', async (req, res, next) => {
     let pass = "비밀번호 123123123123오륙칠팔구";
