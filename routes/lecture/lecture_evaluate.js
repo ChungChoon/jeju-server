@@ -6,6 +6,9 @@ const express = require('express'),
     check = require('../../module/check'),
     jwt = require('../../module/jwt');
 
+/** @description 강의 평가 (수료 자격을 갖춘 학생이 한하여 트랜잭션발생 후 강의평가)
+ *
+ */
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;
 
@@ -43,19 +46,11 @@ router.post('/', async (req, res, next) => {
                         message: "success to evaluate lecture"
                     })
                 }).catch(error => {
-                    return next(error)
+                    // return next(error)
+                    res.status(500).json({
+                        message: "Internal Server Error"
+                    })
                 });
-                // let transaction_result = await db.transactionControll(2, [update_query, [decoded.user_idx, lecture_id], insert_query, [decoded.user_idx, lecture_id, title, content]]);
-                // if (!transaction_result) {
-                //     res.status(500).json({
-                //         message: "Internal server Error!"
-                //     });
-                // } else {
-                //     console.log(transaction_result);
-                //res.status(200).json({
-                //                         message: "success to vote lecture"
-                //                     })
-                // }
             }
 
         }
