@@ -6,6 +6,9 @@ const express = require('express'),
     check = require('../../module/check');
 
 
+/** @description 회원가입시 메일 중복체크
+ * @method POST
+ */
 router.post('/mail', async (req, res, next) => {
     let mail = req.body.mail;
 
