@@ -42,7 +42,7 @@ router.post('/', async (req, res, next) => {
                 });
             } else {
                 let transaction_result = db.transactionControll(async (connection) => {
-                    let update_query = `UPDATE lecture SET apply = apply + 1 WHERE lecture_fk = ?`;
+                    let update_query = `UPDATE lecture SET apply = apply + 1 WHERE lecture_pk = ?`;
                     let insert_query = `insert into lecture_apply (user_fk, lecture_fk, price) values (?, ?, ?)`;
                     await connection.query(update_query, [lecture_id]);
                     await connection.query(insert_query, [decoded.user_idx, lecture_id, price]);
@@ -50,7 +50,11 @@ router.post('/', async (req, res, next) => {
                         message: "success to evaluate lecture"
                     })
                 }).catch(error => {
-                    return next(error)
+                    // return next(error)
+                    console.log(error);
+                    res.status(500).json({
+                        message: "Internal Server Error"
+                    })
                 });
 
             }
