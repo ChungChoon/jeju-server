@@ -5,12 +5,13 @@ const express = require('express'),
     db = require('../../module/db_transction'),
     check = require('../../module/check'),
     crypto = require('crypto-promise'),
-    secret_key = require('../../config/secret_key');
+    secret_key = require('../../config/secret_key'),
+    upload = require('../../config/multer.js').upload;
 
 /** @description 회원가입 - 일반 학생용
  * @method POST
  */
-router.post('/', async (req, res, next) => {
+router.post('/', upload.single('keyFile'), async (req, res, next) => {
     let {
         mail,
         name,
@@ -23,7 +24,6 @@ router.post('/', async (req, res, next) => {
         // hope,
         // interest
     } = req.body;
-
     if (check.checkNull([mail, name, passwd, birth, sex, hp,
             wallet,
             private_key,
@@ -86,7 +86,7 @@ router.post('/', async (req, res, next) => {
 /** @description 회원가입 - 농부 강사용
  * @method POST
  */
-router.post('/farmer', async (req, res, next) => {
+router.post('/farmer', upload.single('keyFile'), async (req, res, next) => {
     let {
         mail,
         name,
