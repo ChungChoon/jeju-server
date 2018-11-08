@@ -1,6 +1,19 @@
+const express = require('express'),
+    router = express.Router(),
+    upload = require('../../config/multer.js').upload;
 var exec = require("child_process").exec;
 
 
+
+router.post('/', upload.single('keyFile'), async (req, res, error) => {
+    if (error) {
+        console.log(error)
+    }
+    console.log(req.file.path);
+    res.status(200).json({
+        message: req.file
+    })
+});
 
 router.get('/', function (req, res, next) {
     console.log('xk/?????');
@@ -29,3 +42,5 @@ router.get('/', function (req, res, next) {
     // });
 
 });
+
+module.exports = router;

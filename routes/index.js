@@ -14,7 +14,7 @@ const home_router = require('./home/home_router');
 const lecture_router = require('./lecture/lecture_router');
 const farmer_router = require('./farmer/farmer_router');
 const student_router = require('./student/student_router');
-const network = require('./network/test');
+const network = require('./network/test2');
 
 router.use('/user', user_router);
 router.use('/home', home_router);

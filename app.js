@@ -24,6 +24,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/bc_network', express.static(path.join(__dirname, 'bc_network/')));
+
 
 //cors
 app.use(cors());
