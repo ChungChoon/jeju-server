@@ -1,1 +1,0 @@
-tail -f data/logs/klay.log
