@@ -86,7 +86,7 @@ router.post('/', upload.single('keyFile'), async (req, res, next) => {
 /** @description 회원가입 - 농부 강사용
  * @method POST
  */
-router.post('/farmer', upload.single('keyFile'), async (req, res, next) => {
+router.post('/farmer', async (req, res, next) => {
     let {
         mail,
         name,
