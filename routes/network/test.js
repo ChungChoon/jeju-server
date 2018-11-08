@@ -4,7 +4,7 @@ const express = require('express'),
 // const {
 //     spawn
 // } = require('child_process');
-// const ls = spawn('cd', ['./bc_network']);
+// const ls = spawn('cd', ['./klay_network']);
 
 // ls.stdout.on('data', (data) => {
 //     console.log(`stdout: ${data}`);
