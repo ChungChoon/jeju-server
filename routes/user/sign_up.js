@@ -6,7 +6,8 @@ const express = require('express'),
     check = require('../../module/check'),
     crypto = require('crypto-promise'),
     secret_key = require('../../config/secret_key'),
-    upload = require('../../config/multer.js').upload;
+    upload = require('../../config/multer.js').upload,
+    axios = require('axios');
 
 /** @description 회원가입 - 일반 학생용
  * @method POST
@@ -21,33 +22,32 @@ router.post('/', upload.single('keyFile'), async (req, res, next) => {
         hp,
         wallet,
         private_key,
-        // hope,
-        // interest
     } = req.body;
-    if (check.checkNull([mail, name, passwd, birth, sex, hp,
-            wallet,
-            private_key,
-            // hope,
-            // interest
-        ])) {
+    if (check.checkNull([mail, name, passwd, birth, sex, hp, wallet, private_key])) {
+        console.log(name);
         res.status(400).send({
             message: "Null Value"
         })
     } else {
         let check_query = `select * from user where mail = ?`;
         let check_result = await db.queryParamArr(check_query, [mail]);
-
         if (!check_result) { // 쿼리수행중 에러가 있을 경우
             res.status(500).send({
                 message: "Internal Server Error"
             });
-
-        } else if (check_result.length >= 1) { // 유저가 존재할 때, 프론트에서 중복 체크 해주지만, 혹시 모를 상황에 대비해 죽복 검증하는 라우터
+        } else if (check_result.length >= 1) { // 유저가 존재할 때, 프론트에서 중복 체크 해주지만, 혹시 모를 상황에 대비해 중복 검증하는 라우터
             res.status(200).send({
                 message: "Already Exists"
             });
 
         } else {
+            let network_server = `http://52.79.137.94:3000`;
+            // const data = new FormData();
+            // data.append(req.file);
+
+            // axios.post(`${network_server}`, req.file).then(result => {
+            //
+            // }).catch();
             const salt = await crypto.randomBytes(32);
             const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
             const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
@@ -56,25 +56,11 @@ router.post('/', upload.single('keyFile'), async (req, res, next) => {
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
 
-
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
                     message: "Internal Server Error"
                 });
             } else {
-                // console.log(insert_result1.insertId);
-                // let user_idx = insert_result1.insertId;
-                // let student_insert_query = `insert into student (user_fk, hope, interest) values (?, ?, ?)`;
-                // let insert_result2 = await db.queryParamArr(student_insert_query, [user_idx, hope, interest]);
-                // if (!insert_result2) { // 쿼리수행중 에러가 있을 경우
-                //     res.status(500).send({
-                //         message: "Internal Server Error"
-                //     });
-                // } else {
-                //     res.status(200).send({
-                //         message: "Success To Sign Up"
-                //     })
-                // }
                 res.status(200).send({
                     message: "Success To Sign Up"
                 })
@@ -100,7 +86,6 @@ router.post('/farmer', async (req, res, next) => {
         farm_name,
         farm_num,
         farm_addr,
-        // farm_subject,
     } = req.body;
 
     if (check.checkNull([mail, name, passwd, birth, sex, career, wallet,
@@ -108,7 +93,6 @@ router.post('/farmer', async (req, res, next) => {
             farm_name,
             farm_num,
             farm_addr,
-            // farm_subject
         ])) {
         res.status(400).send({
             message: "Null Value"
@@ -178,5 +162,18 @@ router.get('/hash', async (req, res, next) => {
     const decipher2 = await crypto.decipher('aes256', secret_key.key)(cipher_result, 'base64');
     console.log(decipher2.toString());
 });
+
+
+// router.post('/up', upload.single('keyFile'), async (req, res, next) => {
+//     // if (error) {
+//     //     console.log(error)
+//     // }
+//     let {mail, name} = req.body;
+//     console.log(name);
+//     console.log(req.file);
+//     res.status(200).json({
+//         message: req.file
+//     })
+// });
 
 module.exports = router;
