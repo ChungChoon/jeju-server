@@ -42,7 +42,7 @@ const express = require('express'),
             });
 
         } else {
-            let network_server = `http://localhost:3000`;
+            let network_server = `http://52.78.62.162:3000`;
             const data = new FormData();
             data.append(req.file);
 
