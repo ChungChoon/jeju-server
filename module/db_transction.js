@@ -35,32 +35,6 @@ module.exports = {
             }
         },
 
-    transactionControll1: async (...args) => {
-        const cnt = args[0];
-        const arr = args[1];
-        let result = [];
-        let connection;
-
-        try {
-            connection = await pool.getConnection();
-            await connection.beginTransaction();
-            for (let i = 0; i<cnt; i++) {
-                result[i] = await connection.query(arr[i], arr[i+1]) || null;
-            }
-            await connection.commit();
-            console.log(arr[1]);
-            console.log(arr.length);
-        }
-        catch (err) {
-            console.log(err);
-            next(err);
-        }
-        finally {
-            pool.releaseConnection(connection);
-            return result;
-        }
-    },
-
     transactionControll : async (...args) => {
         // console.log("Transaction start")
         const connection = await pool.getConnection();

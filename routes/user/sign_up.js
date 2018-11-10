@@ -12,7 +12,8 @@ const express = require('express'),
 /** @description 회원가입 - 일반 학생용
  * @method POST
  */
-router.post('/', upload.single('keyFile'), async (req, res, next) => {
+// router.post('/', upload.single('keyFile'), async (req, res, next) => {
+    router.post('/', async (req, res, next) => {
     let {
         mail,
         name,
@@ -42,29 +43,35 @@ router.post('/', upload.single('keyFile'), async (req, res, next) => {
 
         } else {
             let network_server = `http://52.79.137.94:3000`;
-            // const data = new FormData();
-            // data.append(req.file);
+            const data = new FormData();
+            data.append(req.file);
 
-            // axios.post(`${network_server}`, req.file).then(result => {
-            //
-            // }).catch();
-            const salt = await crypto.randomBytes(32);
-            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
-            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
-            const cipher_result = cipher2.toString('base64');
+            axios.post(`${network_server}`, req.file).then(async (result) => {
+                if (result.message === "regOK") {
+                    const salt = await crypto.randomBytes(32);
+                    const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+                    const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+                    const cipher_result = cipher2.toString('base64');
 
-            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
+                    let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
 
-            if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
-                res.status(500).send({
-                    message: "Internal Server Error"
-                });
-            } else {
-                res.status(200).send({
-                    message: "Success To Sign Up"
-                })
-            }
+                    if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
+                        res.status(500).send({
+                            message: "Internal Server Error"
+                        });
+                    } else {
+                        res.status(200).send({
+                            message: "Success To Sign Up"
+                        })
+                    }
+                }
+                else {
+                    res.status(500).send({
+                        message: "Internal Server Error"
+                    })
+                }
+            }).catch();
         }
     }
 });
