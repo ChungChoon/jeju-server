@@ -42,11 +42,11 @@ const express = require('express'),
             });
 
         } else {
-            let network_server = `http://52.79.137.94:3000`;
+            let network_server = `http://localhost:3000`;
             const data = new FormData();
             data.append(req.file);
 
-            axios.post(`${network_server}`, req.file).then(async (result) => {
+            axios.post(`${network_server}`, data).then(async (result) => {
                 if (result.message === "regOK") {
                     const salt = await crypto.randomBytes(32);
                     const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
