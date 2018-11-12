@@ -14,13 +14,17 @@
     "crypto-promise": "^2.1.0",
     "debug": "~2.2.0",
     "express": "~4.13.1",
+    "form-data": "^2.3.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.3.0",
     "morgan": "~1.6.1",
     "multer": "^1.4.1",
     "mysql-promise": "^5.0.0",
+    "node-fetch": "^2.2.1",
     "nodemon": "^1.18.4",
     "promise-mysql": "^3.3.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "serve-favicon": "~2.3.0"
   }
 }

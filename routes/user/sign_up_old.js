@@ -7,11 +7,10 @@ const express = require('express'),
     crypto = require('crypto-promise'),
     secret_key = require('../../config/secret_key'),
     upload = require('../../config/multer.js').upload,
-    axios = require('axios'),
-    fs = require('fs'),
+    // axios = require('axios'),
     // request = require('request-promise'),
     // reqq = require('request'),
-    // fetch = require('node-fetch'),
+    fetch = require('node-fetch'),
     FormData = require('form-data');
 
 /** @description 회원가입 - 일반 학생용
@@ -48,38 +47,42 @@ router.post('/', upload.single('keyFile'), async (req, res, next) => {
         } else {
             let network_server = `http://52.78.62.162:3000`;
             const form = new FormData();
-            form.append('keyData', fs.createReadStream(`../../bc_network/data/dd/keystore/${req.file.originalname}`));
-            console.log('hello');
-            await axios.create({
-                headers: form.getHeaders()
-            }).post(`${network_server}`, form).then(async response => {
-                console.log(response.data);
-                if(response.data.message === "ok") {
-                    console.log("여기서 알아서 처리")
-                    const salt = await crypto.randomBytes(32);
-                    const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
-                    const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
-                    const cipher_result = cipher2.toString('base64');
-
-                    let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
-
-                    if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
-                        res.status(500).send({
-                            message: "Internal Server Error"
-                        });
-                    } else {
-                        res.status(200).send({
-                            message: "Success To Sign Up"
-                        })
-                    }
-                }
-                else {
-                    res.status(500).send({
-                        message: "Internal Server Error"
-                    })
-                }
+            form.append('keyFile', req.file);
+            fetch(`${network_server}`, { method: 'POST', body: form })
+                .then(function(res) {
+                    return res.json();
+                }).then(function(json) {
+                console.log(json);
             });
+            // console.log(req.file);
+            // await request.post(`${network_server}`, form).then(async (result) => {
+            //     // res.json(req.body);
+            //     console.log(result);
+            //     if (result.message === "regOK") {
+            //         const salt = await crypto.randomBytes(32);
+            //         const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            //         const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            //         const cipher_result = cipher2.toString('base64');
+            //
+            //         let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            //         let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
+            //
+            //         if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
+            //             res.status(500).send({
+            //                 message: "Internal Server Error"
+            //             });
+            //         } else {
+            //             res.status(200).send({
+            //                 message: "Success To Sign Up"
+            //             })
+            //         }
+            //     }
+            //     else {
+            //         res.status(500).send({
+            //             message: "Internal Server Error"
+            //         })
+            //     }
+            // })
         }
     }
 });
@@ -104,11 +107,11 @@ router.post('/farmer', async (req, res, next) => {
     } = req.body;
 
     if (check.checkNull([mail, name, passwd, birth, sex, career, wallet,
-            private_key,
-            farm_name,
-            farm_num,
-            farm_addr,
-        ])) {
+        private_key,
+        farm_name,
+        farm_num,
+        farm_addr,
+    ])) {
         res.status(400).send({
             message: "Null Value"
         })
