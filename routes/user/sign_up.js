@@ -9,16 +9,12 @@ const express = require('express'),
     upload = require('../../config/multer.js').upload,
     axios = require('axios'),
     fs = require('fs'),
-    // request = require('request-promise'),
-    // reqq = require('request'),
-    // fetch = require('node-fetch'),
     FormData = require('form-data');
 
 /** @description 회원가입 - 일반 학생용
  * @method POST
  */
 router.post('/', upload.single('keyFile'), async (req, res, next) => {
-//     router.post('/', async (req, res, next) => {
     let {
         mail,
         name,
@@ -46,10 +42,10 @@ router.post('/', upload.single('keyFile'), async (req, res, next) => {
                 message: "Already Exists"
             });
         } else {
-            let network_server = `http://52.78.62.162:3000`;
+            // let network_server = `http://52.78.62.162:3000`;
+            let network_server = `http://localhost:3001`;
             const form = new FormData();
-            form.append('keyData', fs.createReadStream(`../../bc_network/data/dd/keystore/${req.file.originalname}`));
-            console.log('hello');
+            form.append('keyData', fs.createReadStream(`bc_network/data/dd/keystore/${req.file.originalname}`));
             await axios.create({
                 headers: form.getHeaders()
             }).post(`${network_server}`, form).then(async response => {
