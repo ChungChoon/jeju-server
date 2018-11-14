@@ -31,17 +31,21 @@ router.post('/', async (req, res, next) => {
                 message: "token err"
             });
         } else {
-            let {lecture_id, content} = req.body;
-            if (check.checkNull([lecture_id, content])) {
+            // let {lecture_id, content} = req.body;
+            let lecture_id = req.body.lecture_id;
+            let content = req.body.content || "";
+            if (check.checkNull([lecture_id])) {
                 res.status(400).json({
                     message: "Null Value"
                 });
             } else {
                 let transaction_result = db.transactionControll(async (connection) => {
                     let update_query = `UPDATE lecture_apply SET state = 1 WHERE user_fk = ? and lecture_fk = ?`;
-                    let insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, content) values (?, ?, ?)`;
                     await connection.query(update_query, [decoded.user_idx, lecture_id]);
+                    if (content !== "")  {
+                    let insert_query = `INSERT INTO lecture_review (lecture_fk, user_fk, content) values (?, ?, ?)`;
                     await connection.query(insert_query, [lecture_id, decoded.user_idx, content]);
+                    }
                     res.status(200).json({
                         message: "success to evaluate lecture"
                     })

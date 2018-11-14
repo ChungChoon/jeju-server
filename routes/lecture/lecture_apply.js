@@ -47,7 +47,7 @@ router.post('/', async (req, res, next) => {
                     await connection.query(update_query, [lecture_id]);
                     await connection.query(insert_query, [decoded.user_idx, lecture_id, price]);
                     res.status(200).json({
-                        message: "success to evaluate lecture"
+                        message: "success to apply lecture"
                     })
                 }).catch(error => {
                     // return next(error)
