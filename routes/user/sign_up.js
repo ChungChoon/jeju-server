@@ -100,12 +100,13 @@ router.post('/farmer', async (req, res, next) => {
         hp,
         career,
         wallet,
+        private_key,
         farm_name,
         farm_num,
         farm_addr,
     } = req.body;
 
-    if (check.checkNull([mail, name, passwd, birth, sex, career, wallet,
+    if (check.checkNull([mail, name, passwd, birth, sex, career, wallet, private_key,
             farm_name,
             farm_num,
             farm_addr,
@@ -130,6 +131,8 @@ router.post('/farmer', async (req, res, next) => {
         } else {
             const salt = await crypto.randomBytes(32);
             const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            const cipher_result = cipher2.toString('base64');
 
             let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 1]);
@@ -141,8 +144,8 @@ router.post('/farmer', async (req, res, next) => {
             } else {
                 console.log(insert_result1.insertId);
                 let user_idx = insert_result1.insertId;
-                let farmer_insert_query = `insert into farmer (user_fk, career) values (?, ?)`;
-                let insert_result2 = await db.queryParamArr(farmer_insert_query, [user_idx, career]);
+                let farmer_insert_query = `insert into farmer (user_fk, career, private_key) values (?, ?, ?)`;
+                let insert_result2 = await db.queryParamArr(farmer_insert_query, [user_idx, career, private_key]);
                 if (!insert_result2) { // 쿼리수행중 에러가 있을 경우
                     res.status(500).send({
                         message: "Internal Server Error"
