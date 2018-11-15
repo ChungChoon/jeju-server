@@ -8,6 +8,7 @@ const express = require('express'),
     jwt = require('../../module/jwt'),
     secret_key = require('../../config/secret_key');
 
+
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;
 
@@ -51,8 +52,7 @@ router.post('/', async (req, res, next) => {
                     start_date,
                     end_date,
                     place,
-                    curri_title,
-                    curri_content,
+                    curriculum,
                     intro,
                     limit_num,
                     price,
@@ -60,16 +60,14 @@ router.post('/', async (req, res, next) => {
                 } = req.body;
                 console.log(req.body);
 
-                if (check.checkNull([
-                        title,
+                if (check.checkNull([title,
                         target,
                         kind,
                         period,
                         start_date,
                         end_date,
                         place,
-                        curri_title,
-                        curri_content,
+                        curriculum,
                         intro,
                         limit_num,
                         price,
@@ -77,47 +75,65 @@ router.post('/', async (req, res, next) => {
                     ])) {
                     res.status(400).json({
                         message: "Null Value"
-                    });
+                    })
                 } else {
-                    let transaction_result = db.transactionControll(async (connection) => {
-                        let insert_lecture = `
-                        insert into lecture 
-                        (title, target, kind, period, start_date, end_date, place, intro, limit_num, price, curri_count, owner_fk)
-                        values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?);`;
-                        await connection.query(insert_lecture, [
-                            title,
-                            target,
-                            kind,
-                            period,
-                            start_date,
-                            end_date,
-                            place,
-                            intro,
-                            limit_num,
-                            price,
-                            curri_count,
-                            decoded.user_idx
-                        ]);
+                    let insert_lecture = `insert into lecture (title,
+                    target,
+                    kind,
+                    period,
+                    start_date,
+                    end_date,
+                    place,
+                    curriculum,
+                    intro,
+                limit_num,
+                price,
+            curri_count,
+            owner_fk
+        ) values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?, ?);
+            `;
+                    let insert_lecture_result = await db.queryParamArr(insert_lecture, [title,
+                        target,
+                        kind,
+                        period,
+                        start_date,
+                        end_date,
+                        place,
+                        curriculum,
+                        intro,
+                        limit_num,
+                        price,
+                        curri_count,
+                        decoded.user_idx
+                    ]);
 
-                        let insert_tile = `insert into curri_title (title, lecture_fk) values (?, ?);`;
-                        let insert_content = `insert into curri_content (content, lecture_fk) values (?, ?);`;
-
-                        for (let i = 0; i < curri_count; i++) {
-                            await connection.query(insert_tile, [curri_title[i]]);
-                            await connection.query(insert_content, [curri_content[i]]);
-                        }
-                        res.status(200).json({
-                            message: "success to evaluate lecture"
-                        })
-                    }).catch(error => {
-                        res.status(500).json({
+                    if (!insert_lecture_result) { // 쿼리수행중 에러가 있을 경우
+                        res.status(500).send({
                             message: "Internal Server Error"
+                        });
+                    } else {
+                        res.status(200).send({
+                            message: "Success To Create Lecture"
                         })
-                    });
+                        // let lecture_idx = insert_lecture_result.insertId;
+                        // let lecture_insert2 = `insert into lecture_owner (user_fk, lecture_fk) values (?, ?)`;
+                        // let insert_lecture_result2 = await db.queryParamArr(lecture_insert2, [decoded.user_idx, lecture_idx]);
+                        // if (!insert_lecture_result2) { // 쿼리수행중 에러가 있을 경우
+                        //     res.status(500).send({
+                        //         message: "Internal Server Error"
+                        //     });
+                        // } else {
+                        //     res.status(200).send({
+                        //         message: "Success To Create Lecture"
+                        //     })
+                        // }
+                    }
                 }
             }
+
         }
     }
-})
+});
+
 
 module.exports = router;
