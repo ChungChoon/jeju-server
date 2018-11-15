@@ -8,7 +8,7 @@ const express = require('express'),
 //   res.render('index', {
 //     title: 'Express'
 //   }));
-
+const admin_router = require('./admin/admin_router');
 const user_router = require('./user/user_router');
 const home_router = require('./home/home_router');
 const lecture_router = require('./lecture/lecture_router');
@@ -16,6 +16,8 @@ const farmer_router = require('./farmer/farmer_router');
 const student_router = require('./student/student_router');
 const network = require('./network/test2');
 
+
+router.use('/admin', admin_router);
 router.use('/user', user_router);
 router.use('/home', home_router);
 router.use('/lecture', lecture_router);
