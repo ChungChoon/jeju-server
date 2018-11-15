@@ -1,27 +1,9 @@
 const express = require('express'),
     router = express.Router(),
     db = require('../../module/db_transction'),
-    jwt = require('../../module/jwt');
-// caver_js = require('caver-js'),
-// caver = new caver_js('http://klaytn.ngrok.io');
-
-//배포자
-// let addr = '';
-// let lecture_id = 0;
-// caver.klay.getCode(addr).then(console.log);
-// const jeju_contract = new caver.klay.Contract(jeju.abi, addr);
-// jeju_contract.methods.payBalance(lecture_id).send({
-//         from: addr
-//     }) // Save data 'test' in blockchain
-//     .on('receipt', function (receipt) {
-//         console.log(receipt);
-//         let transactionHash = receipt.transactionHash; // Get transactionHash from receipt
-//         console.log(transactionHash);
-//         caver.klay.getTransaction(transactionHash).then(function (transaction) {
-//             console.log(transaction.input); // Get transaction.input(hex)
-//             console.log(caver.utils.hexToAscii(transaction.input));
-//         });
-//     });
+    jwt = require('../../module/jwt'),
+    caver_js = require('caver-js'),
+    caver = new caver_js('http://klaytn.ngrok.io');
 
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;
