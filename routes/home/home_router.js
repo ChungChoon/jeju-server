@@ -38,7 +38,7 @@ router.get('/', async (req, res, next) => {
                         order by apply desc
                         limit 6
                         `;
-            let offline_query = `
+            let online_query = `
                         select c.attend_cnt, (select count( * ) as buy_count from lecture_apply as a_buy where a_buy.lecture_fk = b.lecture_pk and a_buy.user_fk = ? ) as check_buy, a.user_pk, a.name, a.img, a.user_gb, a.farm_name, a.farm_img, b.lecture_pk, b.curri_count, b.title, b.kind, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.intro, b.limit_num, b.price, b.apply
                         from farmer_info a 
                         join lecture b 
@@ -47,7 +47,7 @@ router.get('/', async (req, res, next) => {
                         on c.lecture_fk = b.lecture_pk and c.user_fk = ?
                         where b.kind in (3, 4, 5, 6, 7)
                         `;
-            let online_query = `
+            let offline_query = `
                         select c.attend_cnt, (select count( * ) as buy_count from lecture_apply as a_buy where a_buy.lecture_fk = b.lecture_pk and a_buy.user_fk = ? ) as check_buy, a.user_pk, a.name, a.img, a.user_gb, a.farm_name, a.farm_img, b.lecture_pk, b.curri_count, b.title, b.kind, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.intro, b.limit_num, b.price, b.apply
                         from farmer_info a 
                         join lecture b 
