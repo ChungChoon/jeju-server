@@ -84,7 +84,7 @@ router.post('/', async (req, res, next) => {
                         insert into lecture 
                         (title, target, kind, period, start_date, end_date, place, intro, limit_num, price, curri_count, owner_fk)
                         values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?);`;
-                        await connection.query(insert_lecture, [
+                        let insert_result = await connection.query(insert_lecture, [
                             title,
                             target,
                             kind,
@@ -98,18 +98,20 @@ router.post('/', async (req, res, next) => {
                             curri_count,
                             decoded.user_idx
                         ]);
-
+                        let lecture_id = insert_result.insertId;
                         let insert_tile = `insert into curri_title (title, lecture_fk) values (?, ?);`;
                         let insert_content = `insert into curri_content (content, lecture_fk) values (?, ?);`;
 
                         for (let i = 0; i < curri_count; i++) {
-                            await connection.query(insert_tile, [curri_title[i]]);
-                            await connection.query(insert_content, [curri_content[i]]);
+                            await connection.query(insert_tile, [curri_title[i], lecture_id]);
+                            await connection.query(insert_content, [curri_content[i], lecture_id]);
                         }
                         res.status(200).json({
                             message: "success to evaluate lecture"
-                        })
+                        });
                     }).catch(error => {
+                        console.log(error);
+
                         res.status(500).json({
                             message: "Internal Server Error"
                         })
