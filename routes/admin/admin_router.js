@@ -1,9 +1,9 @@
 const express = require('express'),
     router = express.Router(),
     db = require('../../module/db_transction'),
-    jwt = require('../../module/jwt'),
-    caver_js = require('caver-js'),
-    caver = new caver_js('http://klaytn.ngrok.io');
+    jwt = require('../../module/jwt');
+// caver_js = require('caver-js'),
+// caver = new caver_js('http://klaytn.ngrok.io');
 
 //배포자
 // let addr = '';
@@ -61,20 +61,22 @@ router.post('/', async (req, res, next) => {
                         message: "No permission "
                     });
                 } else {
-                    caver.klay.getCode(addr).then(console.log);
-                    const jeju_contract = new caver.klay.Contract(jeju.abi, addr);
-                    jeju_contract.methods.payBalance(lecture_id).send({
-                            from: addr
-                        })
-                        .on('receipt', function (receipt) {
-                            console.log(receipt);
-                            let transactionHash = receipt.transactionHash; // Get transactionHash from receipt
-                            console.log(transactionHash);
-                            caver.klay.getTransaction(transactionHash).then(function (transaction) {
-                                console.log(transaction.input); // Get transaction.input(hex)
-                                console.log(caver.utils.hexToAscii(transaction.input));
-                            });
-                        });
+                    // let estimate_gas = caver.klay.Contract.methods.estimateGas()
+                    // caver.klay.getCode(addr).then(console.log);
+                    // const jeju_contract = new caver.klay.Contract(jeju.abi, addr);
+                    // jeju_contract.methods.acceptAdmin(lecture_id).send({
+                    //         from: addr,
+                    //         gas:
+                    //     })
+                    //     .on('receipt', function (receipt) {
+                    //         console.log(receipt);
+                    //         let transactionHash = receipt.transactionHash; // Get transactionHash from receipt
+                    //         console.log(transactionHash);
+                    //         caver.klay.getTransaction(transactionHash).then(function (transaction) {
+                    //             console.log(transaction.input); // Get transaction.input(hex)
+                    //             console.log(caver.utils.hexToAscii(transaction.input));
+                    //         });
+                    //     });
                 }
             }
         }
