@@ -58,7 +58,6 @@ router.post('/', async (req, res, next) => {
                     price,
                     curri_count
                 } = req.body;
-                console.log(req.body);
 
                 if (check.checkNull([
                         title,
@@ -107,7 +106,7 @@ router.post('/', async (req, res, next) => {
                             await connection.query(insert_content, [curri_content[i], lecture_id]);
                         }
                         res.status(200).json({
-                            message: "success to evaluate lecture"
+                            message: "success to create lecture"
                         });
                     }).catch(error => {
                         console.log(error);
