@@ -44,6 +44,7 @@ router.post('/', async (req, res, next) => {
                 });
             } else {
                 let {
+                    lecture_bn,
                     title,
                     target,
                     kind,
@@ -60,6 +61,7 @@ router.post('/', async (req, res, next) => {
                 } = req.body;
 
                 if (check.checkNull([
+                        lecture_bn,
                         title,
                         target,
                         kind,
@@ -81,9 +83,10 @@ router.post('/', async (req, res, next) => {
                     let transaction_result = db.transactionControll(async (connection) => {
                         let insert_lecture = `
                         insert into lecture 
-                        (title, target, kind, period, start_date, end_date, place, intro, limit_num, price, curri_count, owner_fk)
-                        values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?);`;
+                        (lecture_pk, title, target, kind, period, start_date, end_date, place, intro, limit_num, price, curri_count, owner_fk)
+                        values( ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ? , ?, ?);`;
                         let insert_result = await connection.query(insert_lecture, [
+                            lecture_bn,
                             title,
                             target,
                             kind,
@@ -97,16 +100,19 @@ router.post('/', async (req, res, next) => {
                             curri_count,
                             decoded.user_idx
                         ]);
-                        let lecture_id = insert_result.insertId;
-                        let insert_tile = `insert into curri_title (title, lecture_fk) values (?, ?);`;
-                        let insert_content = `insert into curri_content (content, lecture_fk) values (?, ?);`;
+                        let lecture_key = insert_result.insertId;
+                        console.log(lecture_key);
+
+                        let insert_tile = `insert into curri_title (title, lecture_fk, title_cnt) values (?, ?, ?);`;
+                        let insert_content = `insert into curri_content (content, lecture_fk, content_cnt) values (?, ?,?);`;
 
                         for (let i = 0; i < curri_count; i++) {
-                            await connection.query(insert_tile, [curri_title[i], lecture_id]);
-                            await connection.query(insert_content, [curri_content[i], lecture_id]);
+                            await connection.query(insert_tile, [curri_title[i], lecture_bn, i]);
+                            await connection.query(insert_content, [curri_content[i], lecture_bn, i]);
                         }
                         res.status(200).json({
-                            message: "success to create lecture"
+                            message: "success to create lecture",
+                            lecture_id: lecture_bn
                         });
                     }).catch(error => {
                         console.log(error);
