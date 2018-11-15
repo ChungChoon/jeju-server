@@ -50,7 +50,7 @@ router.post('/', async (req, res, next) => {
             });
         } else {
             // let network_server = `http://localhost:3001`;
-            let network_server = `http://52.78.62.162:3001`;
+            let network_server = `http://52.78.62.162:3000`;
 
             axios.post(`${network_server}`, {
                 key,
