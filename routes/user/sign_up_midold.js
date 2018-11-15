@@ -11,8 +11,10 @@ const express = require('express'),
     fs = require('fs'),
     FormData = require('form-data');
 
-
-router.post('/', async (req, res, next) => {
+/** @description 회원가입 - 일반 학생용
+ * @method POST
+ */
+router.post('/', upload.single('keyFile'), async (req, res, next) => {
     let {
         mail,
         name,
@@ -21,23 +23,14 @@ router.post('/', async (req, res, next) => {
         sex,
         hp,
         wallet,
-        key
+        private_key,
     } = req.body;
-
-    if (check.checkNull([
-            mail,
-            name,
-            passwd,
-            birth,
-            sex,
-            hp,
-            wallet,
-            key
-        ])) {
+    if (check.checkNull([mail, name, passwd, birth, sex, hp, wallet, private_key])) {
         res.status(400).send({
             message: "Null Value"
-        });
-    } else {
+        })
+    }
+    else {
         let check_query = `select * from user where mail = ?`;
         let check_result = await db.queryParamArr(check_query, [mail]);
         if (!check_result) { // 쿼리수행중 에러가 있을 경우
@@ -49,25 +42,26 @@ router.post('/', async (req, res, next) => {
                 message: "Already Exists"
             });
         } else {
+            // let network_server = `http://52.78.62.162:3000`;
             let network_server = `http://localhost:3001`;
-            let data = {
-                key_data: key,
-                key_name: mail
-            };
-            axios.post(`${network_server}`, {
-                key,
-                mail
-            }).then(async response => {
+            const form = new FormData();
+            form.append('keyData', '{"version":3,"id":"018a2552-36d5-4f9d-a1f4-bf399cb52e39","crypto":{"ciphertext":"09396c0d934aa5ecb44b8fa055d5e702f4403c877df60efa72fd8811226efab4","cipherparams":{"iv":"e6708c4cc9caa064c8e4f5a7bb195774"},"kdf":"scrypt","kdfparams":{"r":6,"p":1,"n":4096,"dklen":32,"salt":"f0b76e5cba41b162c45c91900d82c119e1785396423a3b1f6b276712dd124fae"},"mac":"b8a19f24b56f444964187d5bef7fdaefe3c9752a3ce4aa346d7a1ac87ffec96a","cipher":"aes-128-ctr"},"address":"0xf694888fc6eea44f8cd03e9c5f18af8f61bdebe8"}');
+            // form.append('keyData', fs.createReadStream(`bc_network/data/dd/keystore/${req.file.originalname}`));
+
+            axios.create({
+                headers: form.getHeaders()
+            }).post(`${network_server}`, form).then(async response => {
                 console.log(response.data.message);
-                if (response.data.message === "ok") {
+                if(response.data.message === "ok") {
+                    console.log("여기서 알아서 처리")
                     const salt = await crypto.randomBytes(32);
                     const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+                    const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+                    const cipher_result = cipher2.toString('base64');
 
-                    let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 2]);
+                    let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                    let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 2]);
 
-                    let user_idx = insert_result1.insertId;
-                    console.log(user_idx);
                     if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                         res.status(500).send({
                             message: "Internal Server Error"
@@ -77,7 +71,8 @@ router.post('/', async (req, res, next) => {
                             message: "Success To Sign Up"
                         })
                     }
-                } else {
+                }
+                else {
                     res.status(500).send({
                         message: "Internal Server Error"
                     })
@@ -85,9 +80,7 @@ router.post('/', async (req, res, next) => {
             });
         }
     }
-
 });
-
 
 /** @description 회원가입 - 농부 강사용
  * @method POST
@@ -102,12 +95,14 @@ router.post('/farmer', async (req, res, next) => {
         hp,
         career,
         wallet,
+        private_key,
         farm_name,
         farm_num,
         farm_addr,
     } = req.body;
 
     if (check.checkNull([mail, name, passwd, birth, sex, career, wallet,
+            private_key,
             farm_name,
             farm_num,
             farm_addr,
@@ -132,9 +127,11 @@ router.post('/farmer', async (req, res, next) => {
         } else {
             const salt = await crypto.randomBytes(32);
             const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            const cipher2 = await crypto.cipher('aes256', secret_key.key)(private_key);
+            const cipher_result = cipher2.toString('base64');
 
-            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 1]);
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, private_key, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, cipher_result, 1]);
 
             if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
                 res.status(500).send({
@@ -168,5 +165,28 @@ router.post('/farmer', async (req, res, next) => {
         }
     }
 });
+
+
+router.get('/hash', async (req, res, next) => {
+    let pass = "비밀번호 123123123123오륙칠팔구";
+    const cipher2 = await crypto.cipher('aes256', secret_key.key)(pass);
+    const cipher_result = cipher2.toString('base64');
+    console.log(cipher_result);
+    const decipher2 = await crypto.decipher('aes256', secret_key.key)(cipher_result, 'base64');
+    console.log(decipher2.toString());
+});
+
+
+// router.post('/up', upload.single('keyFile'), async (req, res, next) => {
+//     // if (error) {
+//     //     console.log(error)
+//     // }
+//     let {mail, name} = req.body;
+//     console.log(name);
+//     console.log(req.file);
+//     res.status(200).json({
+//         message: req.file
+//     })
+// });
 
 module.exports = router;
