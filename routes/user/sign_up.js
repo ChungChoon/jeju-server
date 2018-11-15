@@ -49,12 +49,9 @@ router.post('/', async (req, res, next) => {
                 message: "Already Exists"
             });
         } else {
-            let network_server = `http://192.168.0.20:3001`;
-            // let network_server = `http://52.78.62.162:3001`;
-            let data = {
-                key_data: key,
-                key_name: mail
-            };
+            // let network_server = `http://localhost:3001`;
+            let network_server = `http://52.78.62.162:3001`;
+
             axios.post(`${network_server}`, {
                 key,
                 mail
