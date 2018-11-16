@@ -6,8 +6,6 @@
 
 ### 2. 전체 아키텍쳐
 
----
-
 ![architecture](./uploads/architecture.jpg)
 
 ### 3. 이번 청출어람 프로젝트에서 서버백앤드가 갖는 의미와 역할
