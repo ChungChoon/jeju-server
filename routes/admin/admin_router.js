@@ -6,6 +6,8 @@ const express = require('express'),
     caver = new caver_js('http://localhost:8551');
 // caver = new caver_js('http://klaytn.ngrok.io');
 
+let addmin_addr = `0x7847b04133c7023a7481668e3d0dc18c34b7356d`;
+
 router.post('/', async (req, res, next) => {
     let token = req.headers.token;
     let lecture_id = req.body.lecture_id;
@@ -44,11 +46,15 @@ router.post('/', async (req, res, next) => {
                         message: "No permission "
                     });
                 } else {
-                    let estimate_gas = caver.klay.Contract.methods.estimateGas()
+                    let estimate_gas = caver.klay.estimateGas({
+                            to: "0x11f4d0A3c12e86B4b5F39B213F7E19D048276DAe",
+                            data: "0xc6888fa10000000000000000000000000000000000000000000000000000000000000003"
+                        })
+                        .then(console.log);
                     caver.klay.getCode(addr).then(console.log);
                     const jeju_contract = new caver.klay.Contract(jeju.abi, addr);
                     jeju_contract.methods.acceptAdmin(lecture_id).send({
-                            from: addr,
+                            from: addmin_addr,
                             gas: estimate_gas
                         })
                         .on('receipt', function (receipt) {
