@@ -8,7 +8,7 @@ const express = require('express'),
     secret_key = require('../../config/secret_key'),
     jwt = require('../../module/jwt');
 
-/** @description 사용자로그인 - JWT 발급
+/** @description 수강생 사용자로그인 - JWT 발급
  * @method POST
  */
 router.post('/', async (req, res, next) => {
@@ -71,7 +71,7 @@ router.post('/', async (req, res, next) => {
 
 });
 
-/** @description 사용자로그인 - JWT 발급
+/** @description 강사 사용자로그인 - JWT 발급, private_key 복호화 하여 제공
  * @method POST
  */
 router.post('/farmer', async (req, res, next) => {
@@ -105,7 +105,6 @@ router.post('/farmer', async (req, res, next) => {
                 if (hashed_pw.toString('base64') === check_result[0].passwd) {
                     let token = jwt.sign(check_result[0].user_pk, check_result[0].mail);
                     const decipher2 = await crypto.decipher('aes256', secret_key.key)(key_result[0].private_key, 'base64');
-                    console.log(decipher2.toString());
 
                     let result = [{
                         mail: check_result[0].mail,
