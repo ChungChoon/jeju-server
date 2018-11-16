@@ -146,7 +146,7 @@ router.post('/farmer', async (req, res, next) => {
                 console.log(insert_result1.insertId);
                 let user_idx = insert_result1.insertId;
                 let farmer_insert_query = `insert into farmer (user_fk, career, private_key) values (?, ?, ?)`;
-                let insert_result2 = await db.queryParamArr(farmer_insert_query, [user_idx, career, private_key]);
+                let insert_result2 = await db.queryParamArr(farmer_insert_query, [user_idx, career, cipher_result]);
                 if (!insert_result2) { // 쿼리수행중 에러가 있을 경우
                     res.status(500).send({
                         message: "Internal Server Error"
