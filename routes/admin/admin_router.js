@@ -64,8 +64,14 @@ router.post('/', async (req, res, next) => {
                             caver.klay.getTransaction(transactionHash).then(function (transaction) {
                                 console.log(transaction.input); // Get transaction.input(hex)
                                 console.log(caver.utils.hexToAscii(transaction.input));
+                                res.status(200).json({
+                                    message: "success"
+                                })
                             });
-                        });
+                        })
+                        .on('error', function (error) {
+
+                        })
                 }
             }
         }
