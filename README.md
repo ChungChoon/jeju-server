@@ -22,6 +22,7 @@
 
   - 강사(농부) - WEB 와 수강생 - mobile의 계정으로 나누어 회원가입을 진행
   - mobile의 경우 키스토어 파일 내용을 받아 API서버에서 Network서버로 넘기면 Network서버의 API에서 .json파일로 dd/keystore에 키스토어 파일 생성하여 사용자 등록 후 정상 응답을 받은 API서버에서 나머지 사용자 정보 DB 저장
+  - web의 경우 private_key를 받아 암호화 하여 DB에 저장
 
 * 강의등록
 
