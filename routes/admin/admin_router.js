@@ -19,11 +19,6 @@ const jeju_contract = new caver.klay.Contract(
 
 router.post("/test", async (req, res, next) => {
     let lecture_id = req.body.lecture_id;
-
-    const jeju_contract = new caver.klay.Contract(
-        abi.abi,
-        contract_addr
-    );
     // let estimate_gas = jeju_contract.methodss
     //     .acceptAdmin(lecture_id)
     //     .estimate_gas();
@@ -50,6 +45,9 @@ router.post("/test", async (req, res, next) => {
         })
         .on("error", function (error) {
             console.log(error);
+            res.status(500).json({
+                message: "Internal Server Error"
+            });
         });
 
 })
@@ -68,7 +66,6 @@ router.post("/", async (req, res, next) => {
                 message: "token err", //여기서 400에러를 주면 클라의 문제니까 메세지만 적절하게 잘 바꿔주면 된다.
                 expired: 1
             });
-
             return;
         }
         if (decoded === -1) {
