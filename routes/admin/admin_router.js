@@ -52,6 +52,9 @@ router.post("/test", async (req, res, next) => {
 
 })
 
+/** @description 어드민계정 - 강의평가에 따른 인센티브 지급 컨트랙트 연동
+ * @method POST
+ */
 router.post("/", async (req, res, next) => {
     let token = req.headers.token;
     let lecture_id = req.body.lecture_id;
