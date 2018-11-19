@@ -1,7 +1,7 @@
-// const express = require("express"),
-//     router = express.Router(),
-//     db = require("../../module/db_transction"),
-//     jwt = require("../../module/jwt"),
+const express = require("express"),
+    router = express.Router(),
+    db = require("../../module/db_transction"),
+    jwt = require("../../module/jwt");
 //     caver_js = require("caver-js"),
 //     caver = new caver_js("http://localhost:8551"),
 //     contract = require("../../contract/abi/chungchul.json");
@@ -132,4 +132,4 @@
 //     }
 // });
 
-// module.exports = router;
+module.exports = router;
