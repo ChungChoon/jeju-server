@@ -5,6 +5,10 @@ const express = require('express'),
     db = require('../../module/db_transction'),
     jwt = require('../../module/jwt');
 
+const lecture_info = require('./lecture_info');
+
+router.use('/info', lecture_info);
+
 router.get('/', async (req, res, next) => {
 
     let token = req.headers.token;
