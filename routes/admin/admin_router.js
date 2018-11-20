@@ -4,7 +4,8 @@ const express = require("express"),
     jwt = require("../../module/jwt");
 const caver_js = require("caver-js");
 //     const web3 = require('web3-js');
-    const caver = new caver_js("http://localhost:8551");
+//     const caver = new caver_js("http://localhost:8551");
+    const caver = new caver_js("http://5d7b917b.ngrok.io");
     const contract = require("../../contract/abi/chungchul.json");
 //     const web3_js = new web3("http://localhost:8551");
 //     const contract = require("../../contract/abi/chungchul.json");
@@ -13,7 +14,7 @@ const caver_js = require("caver-js");
 let addmin_addr = `0xb0ab2e7fb5a876c2cfb67250f83739d526d86b7c`;
 
 //배포된 계약 주소
-let contract_addr = "0x017db3b76b39c14a95c0c387abeec1b89c7e016c";
+let contract_addr = "0xfa05a3cc1c985b92a58d466ef336287d0a139891";
 //컨트랙트 설정
 const jeju_contract = new caver.klay.Contract(
     contract.abi,
