@@ -75,9 +75,18 @@ router.post('/', async (req, res, next) => {
                                 message: "Internal Server Error"
                             })
                         } else {
-                            res.status(200).json({
-                                message: "success to check lecture"
-                            })
+                            let update_status = `UPDATE lecture SET status = status+1 WHERE owner_fk = ? and lecture_pk = ?`;
+                            let update_result1 = await db.queryParamArr(update_status, [lecture_id, decoded.user_idx]);
+                            if (!update_result) {
+                                res.status(500).send({
+                                    message: "Internal Server Error"
+                                })
+                            }
+                            else {
+                                res.status(200).json({
+                                    message: "success to check lecture"
+                                })
+                            }
                         }
                     }
                 }
