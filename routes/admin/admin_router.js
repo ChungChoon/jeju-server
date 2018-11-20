@@ -89,7 +89,7 @@ router.post("/", async (req, res, next) => {
                     res.status(500).json({
                         message: "Internal Server Error"
                     });
-                } else if (check_result[0] !== 3) {
+                } else if (check_result[0].admin !== decoded.user_idx) {
                     res.status(200).json({
                         message: "No permission "
                     });

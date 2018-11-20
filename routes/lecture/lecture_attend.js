@@ -75,7 +75,7 @@ router.post('/', async (req, res, next) => {
                         } else {
                             //강의 출석체크 할 때마다 회차를 늘려줌
                             let update_status = `UPDATE lecture SET status = status+1 WHERE owner_fk = ? and lecture_pk = ?`;
-                            let update_result1 = await db.queryParamArr(update_status, [lecture_id, decoded.user_idx]);
+                            let update_result1 = await db.queryParamArr(update_status, [decoded.user_idx, lecture_id]);
                             console.log(update_result1);
                             if (!update_result) {
                                 res.status(500).send({
