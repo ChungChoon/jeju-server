@@ -51,6 +51,7 @@ router.post('/', async (req, res, next) => {
                             message: "no access"
                         });
                     } else {
+
                         let student_query;
                         let student_result;
                         let update_query;
@@ -74,6 +75,7 @@ router.post('/', async (req, res, next) => {
                                 message: "Internal Server Error"
                             })
                         } else {
+                            //강의 출석체크 할 때마다 회차를 늘려줌
                             let update_status = `UPDATE lecture SET status = status+1 WHERE owner_fk = ? and lecture_pk = ?`;
                             let update_result1 = await db.queryParamArr(update_status, [lecture_id, decoded.user_idx]);
                             console.log(update_result1);
@@ -83,9 +85,26 @@ router.post('/', async (req, res, next) => {
                                 })
                             }
                             else {
-                                res.status(200).json({
-                                    message: "success to check lecture"
-                                })
+                                //만약 강의 회차가 총 강의회차와 같으면 강의 완료가 되는 것이므로 완료된 강의 테이블에 넣어준다.
+                                if (select_result[0].status+1 === select_result[0].curri_count) {
+                                    let insert_complite = `insert into lecture_complete (lecture_fk) values (?)`;
+                                    let insert_result = await db.queryParamArr(insert_complite, [lecture_id]);
+                                    if (!insert_result) {
+                                        res.status(500).send({
+                                            message: "Internal Server Error"
+                                        })
+                                    }
+                                    else {
+                                        res.status(200).json({
+                                            message: "success to check lecture"
+                                        })
+                                    }
+                                }
+                                else {
+                                    res.status(200).json({
+                                        message: "success to check lecture"
+                                    })
+                                }
                             }
                         }
                     }
