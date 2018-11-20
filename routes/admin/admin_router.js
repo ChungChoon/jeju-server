@@ -2,8 +2,11 @@ const express = require("express"),
     router = express.Router(),
     db = require("../../module/db_transction"),
     jwt = require("../../module/jwt");
-    const caver_js = require("caver-js");
-    const caver = new caver_js("http://localhost:8551");
+    // const caver_js = require("caver-js");
+    const web3 = require('web3');
+    // const caver = new caver_js("http://localhost:8551");
+    // const contract = require("../../contract/abi/chungchul.json");
+    const web3_js = new web3("http://localhost:8551");
     const contract = require("../../contract/abi/chungchul.json");
 
 //최초 계약배포자 주소
@@ -12,7 +15,7 @@ let addmin_addr = `0xb0ab2e7fb5a876c2cfb67250f83739d526d86b7c`;
 //배포된 계약 주소
 let contract_addr = "0x017db3b76b39c14a95c0c387abeec1b89c7e016c";
 //컨트랙트 설정
-const jeju_contract = new caver.klay.Contract(
+const jeju_contract = new web3_js.eth.Contract(
     contract.abi,
     contract_addr
 );
@@ -137,11 +140,11 @@ router.post("/", async (req, res, next) => {
                             console.log(receipt);
                             let transactionHash = receipt.transactionHash; // Get transactionHash from receipt
                             console.log(transactionHash);
-                            caver.klay
+                            web3_js.eth
                                 .getTransaction(transactionHash)
                                 .then(function (transaction) {
                                     console.log(transaction.input); // Get transaction.input(hex)
-                                    console.log(caver.utils.hexToAscii(transaction.input));
+                                    console.log(web3_js.utils.hexToAscii(transaction.input));
                                     res.status(200).json({
                                         message: "success"
                                     });
