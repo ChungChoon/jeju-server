@@ -11,7 +11,6 @@ const express = require('express'),
     fs = require('fs'),
     FormData = require('form-data');
 
-
 router.post('/', async (req, res, next) => {
     let {
         mail,
@@ -21,7 +20,7 @@ router.post('/', async (req, res, next) => {
         sex,
         hp,
         wallet,
-        key
+        // key
     } = req.body;
 
     if (check.checkNull([
@@ -31,8 +30,7 @@ router.post('/', async (req, res, next) => {
             birth,
             sex,
             hp,
-            wallet,
-            key
+            wallet
         ])) {
         res.status(400).send({
             message: "Null Value"
@@ -49,43 +47,101 @@ router.post('/', async (req, res, next) => {
                 message: "Already Exists"
             });
         } else {
-            // let network_server = `http://localhost:3000`;
-            let network_server = `http://52.78.62.162:3000`;
-            // let network_server = `http://37196b19.ngrok.io`;
+            const salt = await crypto.randomBytes(32);
+            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
 
-            axios.post(`${network_server}`, {
-                key,
-                mail
-            }).then(async response => {
-                console.log(response.data.message);
-                if (response.data.message === "ok") {
-                    const salt = await crypto.randomBytes(32);
-                    const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 2]);
 
-                    let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 2]);
-
-                    let user_idx = insert_result1.insertId;
-                    console.log(user_idx);
-                    if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
-                        res.status(500).send({
-                            message: "Internal Server Error"
-                        });
-                    } else {
-                        res.status(200).send({
-                            message: "Success To Sign Up"
-                        })
-                    }
-                } else {
-                    res.status(500).send({
-                        message: "Internal Server Error"
-                    })
-                }
-            });
+            if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
+                res.status(500).send({
+                    message: "Internal Server Error"
+                });
+            } else {
+                res.status(200).send({
+                    message: "Success To Sign Up"
+                })
+            }
         }
     }
 
 });
+
+// router.post('/', async (req, res, next) => {
+//     let {
+//         mail,
+//         name,
+//         passwd,
+//         birth,
+//         sex,
+//         hp,
+//         wallet,
+//         // key
+//     } = req.body;
+//
+//     if (check.checkNull([
+//             mail,
+//             name,
+//             passwd,
+//             birth,
+//             sex,
+//             hp,
+//             wallet,
+//             // key
+//         ])) {
+//         res.status(400).send({
+//             message: "Null Value"
+//         });
+//     } else {
+//         let check_query = `select * from user where mail = ?`;
+//         let check_result = await db.queryParamArr(check_query, [mail]);
+//         if (!check_result) { // 쿼리수행중 에러가 있을 경우
+//             res.status(500).send({
+//                 message: "Internal Server Error"
+//             });
+//         } else if (check_result.length >= 1) { // 유저가 존재할 때, 프론트에서 중복 체크 해주지만, 혹시 모를 상황에 대비해 중복 검증하는 라우터
+//             res.status(200).send({
+//                 message: "Already Exists"
+//             });
+//         } else {
+//
+//             // let network_server = `http://localhost:3000`;
+//             let network_server = `http://52.78.62.162:3000`;
+//             // let network_server = `http://37196b19.ngrok.io`;
+//
+//             axios.post(`${network_server}`, {
+//                 key,
+//                 mail
+//             }).then(async response => {
+//                 console.log(response.data.message);
+//                 if (response.data.message === "ok") {
+//                     const salt = await crypto.randomBytes(32);
+//                     const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+//
+//                     let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+//                     let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 2]);
+//
+//                     let user_idx = insert_result1.insertId;
+//                     console.log(user_idx);
+//                     if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
+//                         res.status(500).send({
+//                             message: "Internal Server Error"
+//                         });
+//                     } else {
+//                         res.status(200).send({
+//                             message: "Success To Sign Up"
+//                         })
+//                     }
+//                 } else {
+//                     res.status(500).send({
+//                         message: "Internal Server Error"
+//                     })
+//                 }
+//             });
+//         }
+//     }
+//
+// });
 
 
 /** @description 회원가입 - 농부 강사용
