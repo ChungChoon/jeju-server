@@ -39,7 +39,7 @@ router.post('/', async (req, res, next) => {
                     message: "Null Value"
                 });
             } else {
-                let check_auth = `select * from lecture_owner where lecture_fk = ? and user_fk = ?`;
+                let check_auth = `select * from lecture where lecture_pk = ? and owner_fk = ?`;
                 let select_result = await db.queryParamArr(check_auth, [lecture_id, decoded.user_idx]);
 
                 if (!select_result) {
