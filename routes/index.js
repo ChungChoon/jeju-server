@@ -8,7 +8,7 @@ const express = require('express'),
 //   res.render('index', {
 //     title: 'Express'
 //   }));
-const admin_router = require('./admin/admin_router');
+const admin_router = require('./admin/admin_router_old');
 const user_router = require('./user/user_router');
 const home_router = require('./home/home_router');
 const lecture_router = require('./lecture/lecture_router');

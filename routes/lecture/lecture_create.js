@@ -4,9 +4,7 @@ const express = require('express'),
     router = express.Router(),
     db = require('../../module/db_transction'),
     check = require('../../module/check'),
-    crypto = require('crypto-promise'),
-    jwt = require('../../module/jwt'),
-    secret_key = require('../../config/secret_key');
+    jwt = require('../../module/jwt');
 
 /** @description 강의 생성 ( 강사 계정 ) - 클라이언트(웹)에서 블록에 강의 등록 트랜잭션 후 블록넘버를 기본키로 받아 강의 생성
  * @method POST
