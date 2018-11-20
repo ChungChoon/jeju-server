@@ -32,7 +32,6 @@ router.post('/', async (req, res, next) => {
         } else {
             let lecture_id = req.body.lecture_id;
             let attendants = req.body.attendants;
-            // console.log(lecture_id);
 
             if (check.checkNull([lecture_id])) {
                 res.status(400).json({
@@ -77,6 +76,7 @@ router.post('/', async (req, res, next) => {
                         } else {
                             let update_status = `UPDATE lecture SET status = status+1 WHERE owner_fk = ? and lecture_pk = ?`;
                             let update_result1 = await db.queryParamArr(update_status, [lecture_id, decoded.user_idx]);
+                            console.log(update_result1);
                             if (!update_result) {
                                 res.status(500).send({
                                     message: "Internal Server Error"
