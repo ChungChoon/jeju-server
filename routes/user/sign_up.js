@@ -229,4 +229,68 @@ router.post('/farmer', async (req, res, next) => {
     }
 });
 
+
+/** @description 회원가입 - admin
+ * @method POST
+ */
+router.post('/admin', async (req, res, next) => {
+    let {
+        mail,
+        name,
+        passwd,
+        birth,
+        sex,
+        hp,
+        wallet,
+        comment //admin에 대한 설명
+    } = req.body;
+
+    if (check.checkNull([mail, name, passwd, birth, sex, wallet, comment]))
+    {
+        res.status(400).send({
+            message: "Null Value"
+        })
+    } else {
+        let check_query = `select * from user where mail = ?`;
+        let check_result = await db.queryParamArr(check_query, [mail]);
+
+        if (!check_result) { // 쿼리수행중 에러가 있을 경우
+            res.status(500).send({
+                message: "Internal Server Error"
+            });
+
+        } else if (check_result.length >= 1) { // 유저가 존재할 때, 프론트에서 중복 체크 해주지만, 혹시 모를 상황에 대비해 죽복 검증하는 라우터
+            res.status(200).send({
+                message: "Already Exists"
+            });
+
+        } else {
+            const salt = await crypto.randomBytes(32);
+            const hashed_pw = await crypto.pbkdf2(passwd, salt.toString('base64'), 100000, 32, 'sha512');
+
+            let common_insert_query = `insert into user (mail, name, passwd, salt, birth, sex, hp, wallet_addr, user_gb) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            let insert_result1 = await db.queryParamArr(common_insert_query, [mail, name, hashed_pw.toString('base64'), salt.toString('base64'), birth, sex, hp, wallet, 100]);
+
+            if (!insert_result1) { // 쿼리수행중 에러가 있을 경우
+                res.status(500).send({
+                    message: "Internal Server Error"
+                });
+            } else {
+                let admin_insert_query = `insert into admin (admin, comment) values (?, ?)`;
+                let admin_insert_result = await db.queryParamArr(admin_insert_query, [insert_result1.insertId, comment]);
+                if (!admin_insert_result) {
+                    res.status(500).send({
+                        message: "Internal Server Error"
+                    });
+                }
+                else {
+                    res.status(200).send({
+                        message: "Success To Sign Up"
+                    });
+                }
+            }
+        }
+    }
+});
+
 module.exports = router;

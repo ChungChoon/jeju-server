@@ -17,6 +17,32 @@ const express = require("express"),
 //     contract_addr
 // );
 
+router.get('/', async (req, res, next) => {
+    let token = req.headers.token;
+    if (!token) {
+        res.status(400).json({
+            message: "No Token"
+        });
+    } else {
+        let decoded = jwt.verify(token);
+        if (decoded === 10) {
+            res.status(500).send({
+                message: "token err", //여기서 400에러를 주면 클라의 문제니까 메세지만 적절하게 잘 바꿔주면 된다.
+                expired: 1
+            });
+            return;
+        }
+        if (decoded === -1) {
+            res.status(500).send({
+                message: "token error"
+            });
+        }
+        else {
+            //실제 어드민 계정인지 확인
+        }
+    }
+})
+
 // router.post("/test", async (req, res, next) => {
 //     let lecture_id = req.body.lecture_id;
 //     // let estimate_gas = jeju_contract.methodss
