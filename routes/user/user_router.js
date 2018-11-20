@@ -8,10 +8,12 @@ const express = require("express"),
 const sign_up = require("./sign_up");
 const sign_in = require("./sign_in");
 const dup_check = require("./dup_check");
+const faucet = require("./faucet");
 
 router.use("/signup", sign_up);
 router.use("/signin", sign_in);
 router.use("/dupcheck", dup_check);
+router.use("/faucet", faucet);
 
 router.get("/", async (req, res, next) => {
   let token = req.headers.token;
