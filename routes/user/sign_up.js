@@ -11,6 +11,9 @@ const express = require('express'),
     fs = require('fs'),
     FormData = require('form-data');
 
+/** @description 회원가입 - 일반 학생용
+ * @method POST
+ */
 router.post('/', async (req, res, next) => {
     let {
         mail,
@@ -20,7 +23,6 @@ router.post('/', async (req, res, next) => {
         sex,
         hp,
         wallet,
-        // key
     } = req.body;
 
     if (check.checkNull([
