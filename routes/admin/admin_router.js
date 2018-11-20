@@ -81,7 +81,7 @@ router.post("/", async (req, res, next) => {
                     message: "Null Value"
                 });
             } else {
-                let auth_check = `select user_gb from where user_pk = ?`;
+                let auth_check = `select * from admin where admin = ?`;
                 let check_result = await db.queryParamArr(auth_check, [
                     decoded.user_idx
                 ]);
@@ -89,7 +89,7 @@ router.post("/", async (req, res, next) => {
                     res.status(500).json({
                         message: "Internal Server Error"
                     });
-                } else if (check_result !== 3) {
+                } else if (check_result[0] !== 3) {
                     res.status(200).json({
                         message: "No permission "
                     });
