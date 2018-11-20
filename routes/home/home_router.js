@@ -36,7 +36,7 @@ router.get('/', async (req, res, next) => {
                         left outer join lecture_apply c
                         on c.lecture_fk = b.lecture_pk and c.user_fk = ?
                         order by apply desc
-                        limit 6
+                        limit 3
                         `;
             let online_query = `
                         select c.attend_cnt, (select count( * ) as buy_count from lecture_apply as a_buy where a_buy.lecture_fk = b.lecture_pk and a_buy.user_fk = ? ) as check_buy, a.user_pk, a.name, a.img, a.user_gb, a.farm_name, a.farm_img, b.lecture_pk, b.curri_count, b.title, b.kind, date_format(b.start_date, "%Y-%m-%d") as start_date, date_format(b.end_date, "%Y-%m-%d") as end_date, date_format(b.reg_date, "%Y-%m-%d") as reg_date, b.img, b.place, b.intro, b.limit_num, b.price, b.apply
