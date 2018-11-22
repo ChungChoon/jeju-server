@@ -24,7 +24,6 @@ router.get('/', async (req, res, next) => {
                 message: "token err", //여기서 400에러를 주면 클라의 문제니까 메세지만 적절하게 잘 바꿔주면 된다.
                 expired: 1
             });
-
             return;
         }
         if (decoded === -1) {

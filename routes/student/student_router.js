@@ -4,6 +4,11 @@ const express = require('express'),
     router = express.Router(),
     db = require('../../module/db_transction'),
     jwt = require('../../module/jwt');
+//
+//
+// let isAuth = () => {
+//     let select1 = `select * from `
+// }
 
 
 /** @description 나의 강의 목록 (학생 계정)
