@@ -132,6 +132,10 @@ router.post("/", async (req, res, next) => {
     }
 });
 
+
+/** @description 어드민 계정으로 로그인 할 경우 강의평가가 완료된 강의리스트를 보여준다.
+ * @method GET
+ */
 router.get('/', async (req, res, next) => {
 
     let token = req.headers.token;
