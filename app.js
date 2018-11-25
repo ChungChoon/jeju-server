@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads/')));
+
 //klaytn network에 사용자 등록을 위해 직접 key파일을 keystore에 업로드하기 위함
 app.use('/bc_network', express.static(path.join(__dirname, 'bc_network/')));
 
@@ -35,7 +35,7 @@ app.use(cors());
 app.use('/', routes);
 app.use('/users', users);
 
-// catch 404 and forward to error handler
+// catch 404 and forward to error handlers
 app.use((req, res, next) => {
   let err = new Error('Not Found');
   err.status = 404;
